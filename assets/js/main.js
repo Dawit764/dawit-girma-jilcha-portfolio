@@ -23,8 +23,8 @@ const PROJECTS_DATA = {
       "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600",
       "https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&q=80&w=600"
     ],
-    github: "https://github.com/jilchamakura/paper-bag-business",
-    demo: "https://jilchamakura.github.io/paper-bag-business",
+    github: "https://github.com/Dawit764/zelaqi-pack-ethiopia",
+    demo: "https://zelaqi-pack-ethiopia.netlify.app/",
     location: "Addis Ababa, Ethiopia",
     client: "Local Sustainable Packaging Startup",
     duration: "4 Weeks"
@@ -48,8 +48,8 @@ const PROJECTS_DATA = {
       "https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80&w=600",
       "https://images.unsplash.com/photo-1469371670807-013ccf25f16a?auto=format&fit=crop&q=80&w=600"
     ],
-    github: "https://github.com/jilchamakura/50th-anniversary",
-    demo: "https://jilchamakura.github.io/50th-anniversary",
+    github: "https://github.com/Dawit764/50th-anniversary-digital-album",
+    demo: "https://50-th-anniversary-for-my-grandpa.netlify.app/",
     location: "Global Reach",
     client: "Private Family Commemoration",
     duration: "3 Weeks"
@@ -314,53 +314,78 @@ function initMobileNav() {
 function initContactForm() {
   const form = document.getElementById("contact-form");
   const statusEl = document.getElementById("contact-form-status");
-  
-  if (!form) return;
-  
-  form.addEventListener("submit", (e) => {
+  const submitBtn = document.getElementById("form-submit-btn");
+  const btnText = submitBtn?.querySelector(".btn-text");
+
+  if (!form || !statusEl || !submitBtn) return;
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    
+
     const name = document.getElementById("form-name").value.trim();
     const email = document.getElementById("form-email").value.trim();
     const subject = document.getElementById("form-subject").value.trim();
     const message = document.getElementById("form-message").value.trim();
-    
+
     if (!name || !email || !message) {
       showStatus("Please fill in all required fields.", "error");
       return;
     }
-    
-    // Save contact inquiries locally to maintain state / simulate server
-    const inquiry = {
-      name,
-      email,
-      subject: subject || "No Subject",
-      message,
-      timestamp: new Date().toISOString()
-    };
-    
-    let inquiries = JSON.parse(localStorage.getItem("portfolio_inquiries") || "[]");
-    inquiries.push(inquiry);
-    localStorage.setItem("portfolio_inquiries", JSON.stringify(inquiries));
-    
-    showStatus("Thank you! Your message has been sent successfully.", "success");
-    form.reset();
+
+    submitBtn.disabled = true;
+    if (btnText) btnText.textContent = "Sending...";
+
+    showStatus("Sending message...", "info");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: "662245c4-f272-4ae8-b71c-8073505a1c16",
+          name,
+          email,
+          subject,
+          message,
+          from_name: name,
+          replyto: email,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        throw new Error(result.message || "Submission failed.");
+      }
+
+      showStatus("Thank you! Your message has been sent.", "success");
+      form.reset();
+
+      if (btnText) btnText.textContent = "Message Sent!";
+
+      setTimeout(() => {
+        if (btnText) btnText.textContent = "Send Message";
+      }, 2500);
+
+    } catch (error) {
+      console.error(error);
+
+      showStatus("Something went wrong. Please try again.", "error");
+
+      if (btnText) btnText.textContent = "Send Message";
+    } finally {
+      submitBtn.disabled = false;
+    }
   });
-  
+
   function showStatus(text, type) {
     statusEl.textContent = text;
     statusEl.className = `form-status ${type}`;
-    
-    setTimeout(() => {
-      statusEl.style.opacity = "0";
-      setTimeout(() => {
-        statusEl.className = "form-status";
-        statusEl.style.opacity = "";
-      }, 300);
-    }, 5000);
   }
 }
-
 // 6. Statistics Counter animation
 function initStatsCounter() {
   const stats = document.querySelectorAll(".stat-number");

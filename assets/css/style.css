@@ -1,6 +1,3 @@
-/* ====================================================================
-   Dawit Girma Jilcha - Premium Portfolio Main Stylesheet
-   ==================================================================== */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -470,7 +467,7 @@ section {
 .typing-text {
   font-family: var(--font-mono);
   color: var(--primary);
-  font-size: 1.05rem;
+  font-size: 1.00rem;
   font-weight: 500;
   border-right: 2px solid var(--primary);
   padding-right: 4px;
@@ -501,14 +498,16 @@ section {
 }
 
 .portrait-container {
-  width: 320px;
-  height: 320px;
+  width: 380px;
+  height: 380px;
   border-radius: 50%;
   position: relative;
   z-index: 5;
   background: var(--surface);
-  border: 1px solid rgba(0, 245, 255, 0.15);
-  box-shadow: 0 0 40px rgba(0, 245, 255, 0.08);
+  border: 1px solid rgba(0, 245, 255, 0.12);
+  box-shadow:
+    0 15px 60px rgba(0, 245, 255, 0.12),
+    0 0 80px rgba(124, 58, 237, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -518,21 +517,25 @@ section {
 /* Glow Border element for the Portrait container */
 .portrait-glow-border {
   position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
-  z-index: 1;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(
+      135deg,
+      var(--primary),
+      var(--secondary),
+      var(--accent)
+  );
   border-radius: 50%;
-  opacity: 0.45;
-  filter: blur(2px);
-  transition: opacity 0.3s ease;
+  opacity: .28;
+  filter: blur(1px);
+  transition: .3s;
 }
 
-.portrait-container:hover .portrait-glow-border {
-  opacity: 0.8;
-  filter: blur(4px);
+.portrait-container:hover .portrait-glow-border{
+    opacity:.45;
+    filter:blur(2px);
 }
 
 .portrait-inner {
@@ -550,15 +553,16 @@ section {
   align-items: center;
 }
 
-.portrait-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s ease;
+.portrait-img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center 18%;
+    transition:transform .5s ease;
 }
 
-.portrait-container:hover .portrait-img {
-  transform: scale(1.05);
+.portrait-container:hover .portrait-img{
+    transform:scale(1.02);
 }
 
 /* Floating Geometric Decorations */
@@ -594,10 +598,10 @@ section {
   color: var(--accent);
   font-size: 0.75rem;
   opacity: 0.4;
-  top: 80%;
-  left: -5%;
+  top: 120%;
+  left: -10%;
   letter-spacing: 0.1em;
-  animation: float-fast 6s infinite ease-in-out;
+  animation: float-fast 3s infinite ease-in-out;
 }
 
 .dec-4 {
@@ -830,7 +834,7 @@ section {
 }
 
 .project-img {
-  width: 100%;
+  width: 10%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s ease;
