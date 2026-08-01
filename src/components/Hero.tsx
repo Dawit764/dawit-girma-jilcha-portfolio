@@ -106,7 +106,7 @@ export default function Hero() {
             
             <div className="absolute inset-1 rounded-full bg-[var(--color-surface)] z-[2] overflow-hidden">
               <img 
-                src="/assets/images/dawit_girma_portrait.jpg" 
+                src="/dawit_girma_portrait.jpg" 
                 alt="Dawit Girma Jilcha portrait" 
                 className="w-full h-full object-cover object-[center_18%] transition-transform duration-500 group-hover:scale-105"
                 referrerPolicy="no-referrer" 
