@@ -13,6 +13,7 @@ const Mission = React.lazy(() => import('./components/Mission'));
 const Stats = React.lazy(() => import('./components/Stats'));
 const Skills = React.lazy(() => import('./components/Skills'));
 const Projects = React.lazy(() => import('./components/Projects'));
+const GitHubActivity = React.lazy(() => import('./components/GitHubActivity'));
 const Journey = React.lazy(() => import('./components/Journey'));
 const Contact = React.lazy(() => import('./components/Contact'));
 const Footer = React.lazy(() => import('./components/Footer'));
@@ -43,6 +44,7 @@ function App() {
           <Stats />
           <Skills />
           <Projects />
+          <GitHubActivity />
           <Journey />
           <Contact />
         </Suspense>
