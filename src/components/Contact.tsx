@@ -123,7 +123,7 @@ export default function Contact() {
           whileInView={{ opacity: 1, x: 0 }}
           viewport={{ once: true, margin: "-50px" }}
           transition={{ duration: 0.6, delay: 0.2 }}
-          className="bg-[var(--color-surface)] border border-[var(--color-primary)]/10 p-8 rounded-2xl shadow-xl"
+          className="bg-[var(--color-surface)] border border-[var(--color-primary)]/10 p-5 sm:p-8 rounded-2xl shadow-xl"
         >
           <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">

@@ -156,7 +156,7 @@ export default function Projects() {
                 return (
                   <motion.div 
                     key={project.id}
-                    className={`relative flex-shrink-0 w-[80vw] md:w-[50vw] max-w-[700px] h-[500px] snap-center rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-700 ease-out border border-white/10 ${isActive ? 'scale-100 opacity-100 shadow-[0_0_50px_rgba(0,245,255,0.15)] z-10' : 'scale-[0.85] opacity-30 hover:opacity-50 z-0'}`}
+                    className={`relative flex-shrink-0 w-[85vw] sm:w-[80vw] md:w-[50vw] max-w-[700px] h-[420px] md:h-[500px] snap-center rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-700 ease-out border border-white/10 ${isActive ? 'scale-100 opacity-100 shadow-[0_0_50px_rgba(0,245,255,0.15)] z-10' : 'scale-[0.85] opacity-30 hover:opacity-50 z-0'}`}
                     onClick={() => setSelectedProject(project.id as keyof typeof PROJECTS_DATA)}
                   >
                     <img 
@@ -168,7 +168,7 @@ export default function Projects() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-background)] via-[var(--color-background)]/70 to-transparent" />
                     
-                    <div className={`absolute inset-x-0 bottom-0 p-8 md:p-12 flex flex-col items-center text-center transition-all duration-500 delay-100 ${isActive ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
+                    <div className={`absolute inset-x-0 bottom-0 p-6 md:p-12 flex flex-col items-center text-center transition-all duration-500 delay-100 ${isActive ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                       <div className="flex flex-wrap justify-center gap-2 mb-4">
                         {project.badges.slice(0, 3).map(badge => (
                           <span key={badge} className="px-3 py-1 bg-[var(--color-primary)]/20 backdrop-blur-md text-[var(--color-primary)] text-xs font-mono rounded-full border border-[var(--color-primary)]/30">
