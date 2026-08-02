@@ -123,9 +123,9 @@ export default function GitHubActivity() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 0.6, delay: 0.4 }}
-          className="bg-[var(--color-surface)] border border-[var(--color-primary)]/15 rounded-3xl p-8 md:p-12 shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex flex-col items-center overflow-x-auto"
+          className="bg-[var(--color-surface)] border border-[var(--color-primary)]/15 rounded-3xl p-8 md:p-12 shadow-[0_20px_40px_rgba(0,0,0,0.4)] flex flex-col items-start md:items-center overflow-x-auto"
         >
-          <div className="w-full min-w-[800px] flex justify-center">
+          <div className="w-full min-w-[800px] flex justify-start md:justify-center">
             <GitHubCalendar 
               username="Dawit764" 
               colorScheme="dark"

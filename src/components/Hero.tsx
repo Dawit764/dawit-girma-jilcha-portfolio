@@ -104,7 +104,7 @@ export default function Hero() {
           {/* 3D Canvas Background for this column */}
           <Hero3D />
           
-          <div className="relative w-[380px] h-[380px] rounded-full z-10 bg-[var(--color-surface)] border border-[var(--color-primary)]/10 shadow-[0_15px_60px_rgba(0,245,255,0.12),0_0_80px_rgba(124,58,237,0.08)] flex items-center justify-center group overflow-hidden">
+          <div className="relative w-[280px] h-[280px] sm:w-[380px] sm:h-[380px] rounded-full z-10 bg-[var(--color-surface)] border border-[var(--color-primary)]/10 shadow-[0_15px_60px_rgba(0,245,255,0.12),0_0_80px_rgba(124,58,237,0.08)] flex items-center justify-center group overflow-hidden">
             {/* Glow border on hover */}
             <div className="absolute inset-[-1px] rounded-full bg-gradient-to-br from-[var(--color-primary)] via-[var(--color-secondary)] to-[var(--color-accent)] opacity-30 blur-[1px] transition-all duration-300 group-hover:opacity-50 group-hover:blur-[2px]" />
             
