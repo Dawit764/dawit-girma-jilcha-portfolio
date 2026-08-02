@@ -21,6 +21,7 @@ export default function Header() {
     { name: 'Projects', href: '#featured-projects' },
     { name: 'Blog', href: '#blog' },
     { name: 'Journey', href: '#journey' },
+    { name: 'Certifications', href: '#certifications' },
     { name: 'Contact', href: '#contact' },
   ];
 

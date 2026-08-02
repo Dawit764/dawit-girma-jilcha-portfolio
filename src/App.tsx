@@ -16,6 +16,7 @@ const Projects = React.lazy(() => import('./components/Projects'));
 const GitHubActivity = React.lazy(() => import('./components/GitHubActivity'));
 const Blog = React.lazy(() => import('./components/Blog'));
 const Journey = React.lazy(() => import('./components/Journey'));
+const Certifications = React.lazy(() => import('./components/Certifications'));
 const Contact = React.lazy(() => import('./components/Contact'));
 const Footer = React.lazy(() => import('./components/Footer'));
 
@@ -48,6 +49,7 @@ function App() {
           <GitHubActivity />
           <Blog />
           <Journey />
+          <Certifications />
           <Contact />
         </Suspense>
       </main>
