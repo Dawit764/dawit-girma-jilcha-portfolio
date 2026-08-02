@@ -19,6 +19,7 @@ export default function Header() {
     { name: 'Mission', href: '#mission' },
     { name: 'Skills', href: '#skills' },
     { name: 'Projects', href: '#featured-projects' },
+    { name: 'Blog', href: '#blog' },
     { name: 'Journey', href: '#journey' },
     { name: 'Contact', href: '#contact' },
   ];
