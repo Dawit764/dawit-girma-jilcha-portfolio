@@ -1,6 +1,6 @@
-import { motion, AnimatePresence } from 'motion/react';
 import { useState } from 'react';
-import { Award, Code2, Cloud, Brain, Database, Shield, ChevronRight } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Award, Code2, Cloud, Brain, Database, Shield, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const certData = [
   {
@@ -10,10 +10,7 @@ const certData = [
     date: "2025",
     Icon: Cloud,
     color: "#FF9900", // AWS Orange
-    size: 110,
-    xOffset: "15%",
-    yOffset: "10%",
-    delay: 0
+    link: "#",
   },
   {
     id: "dl-ai",
@@ -22,10 +19,7 @@ const certData = [
     date: "2024",
     Icon: Brain,
     color: "#F76900", // TF Orange
-    size: 130,
-    xOffset: "40%",
-    yOffset: "35%",
-    delay: 0.5
+    link: "#",
   },
   {
     id: "meta-frontend",
@@ -34,10 +28,7 @@ const certData = [
     date: "2024",
     Icon: Code2,
     color: "#0668E1", // Meta Blue
-    size: 100,
-    xOffset: "70%",
-    yOffset: "15%",
-    delay: 1.2
+    link: "#",
   },
   {
     id: "ibm-data",
@@ -46,10 +37,7 @@ const certData = [
     date: "2023",
     Icon: Database,
     color: "#0f62fe", // IBM Blue
-    size: 120,
-    xOffset: "20%",
-    yOffset: "60%",
-    delay: 0.8
+    link: "#",
   },
   {
     id: "google-cyber",
@@ -58,143 +46,173 @@ const certData = [
     date: "2023",
     Icon: Shield,
     color: "#34A853", // Google Green
-    size: 90,
-    xOffset: "75%",
-    yOffset: "65%",
-    delay: 1.5
+    link: "#",
   }
 ];
 
 export default function Certifications() {
-  const [hoveredCert, setHoveredCert] = useState<string | null>(null);
+  const [currentIndex, setCurrentIndex] = useState(2); // Start in the middle
+
+  const handleNext = () => {
+    setCurrentIndex((prev) => (prev + 1) % certData.length);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex((prev) => (prev - 1 + certData.length) % certData.length);
+  };
+
+  const activeCert = certData[currentIndex];
 
   return (
-    <section id="certifications" className="relative py-[80px] max-w-[1200px] mx-auto px-6 z-10">
-      <div className="font-mono text-[0.8rem] text-[var(--color-primary)] uppercase tracking-[0.2em] mb-3 text-center md:text-right">
-        06 // Micro-Credentials
-      </div>
+    <section id="certifications" className="relative py-[100px] overflow-hidden z-10">
       
-      <h2 className="text-4xl md:text-[2.5rem] font-bold text-white mb-16 text-center md:text-right">
-        Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]">Certifications</span>
-      </h2>
+      {/* Dynamic Ambient Background based on active card */}
+      <motion.div 
+        className="absolute inset-0 opacity-20 blur-[150px] transition-colors duration-1000 ease-in-out pointer-events-none"
+        animate={{ backgroundColor: activeCert.color }}
+      />
 
-      <div className="relative w-full h-[500px] bg-gradient-to-br from-[var(--color-surface)]/50 to-[var(--color-surface-hover)]/30 border border-white/5 rounded-3xl overflow-hidden shadow-[inset_0_0_80px_rgba(0,0,0,0.5)]">
+      <div className="max-w-[1200px] mx-auto px-6 relative z-10">
+        <div className="font-mono text-[0.8rem] text-[var(--color-primary)] uppercase tracking-[0.2em] mb-3 text-center">
+          06 // Micro-Credentials
+        </div>
         
-        {/* Background ambient glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-[var(--color-primary)]/5 blur-[100px] rounded-full pointer-events-none" />
+        <h2 className="text-4xl md:text-[2.5rem] font-bold text-white mb-16 text-center">
+          Professional <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]">Certifications</span>
+        </h2>
 
-        {certData.map((cert) => {
-          const isHovered = hoveredCert === cert.id;
-          const isAnyHovered = hoveredCert !== null;
+        {/* 3D Carousel Container */}
+        <div className="relative h-[450px] w-full flex items-center justify-center [perspective:1000px]">
           
-          return (
-            <motion.div
-              key={cert.id}
-              className="absolute z-20"
-              style={{
-                left: cert.xOffset,
-                top: cert.yOffset,
-                width: cert.size,
-                height: cert.size,
-              }}
-              initial={{ y: 50, opacity: 0 }}
-              whileInView={{ y: 0, opacity: 1 }}
-              viewport={{ once: true, margin: "-100px" }}
-              animate={{
-                y: isHovered ? -10 : [0, -15, 0],
-                x: isHovered ? 0 : [0, 10, 0],
-                rotate: isHovered ? 0 : [0, 5, -5, 0]
-              }}
-              transition={{
-                y: {
-                  duration: isHovered ? 0.3 : 6 + Math.random() * 2,
-                  repeat: isHovered ? 0 : Infinity,
-                  ease: "easeInOut",
-                  delay: isHovered ? 0 : cert.delay
-                },
-                x: {
-                  duration: 8 + Math.random() * 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: cert.delay
-                },
-                rotate: {
-                  duration: 10 + Math.random() * 2,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                  delay: cert.delay
-                },
-                opacity: { duration: 0.8 }
-              }}
-            >
-              {/* The Badge */}
-              <motion.div
-                onHoverStart={() => setHoveredCert(cert.id)}
-                onHoverEnd={() => setHoveredCert(null)}
-                className="w-full h-full relative cursor-pointer group"
-                animate={{
-                  scale: isHovered ? 1.15 : (isAnyHovered ? 0.9 : 1),
-                  opacity: isAnyHovered && !isHovered ? 0.5 : 1,
-                  filter: isAnyHovered && !isHovered ? "blur(2px)" : "blur(0px)"
-                }}
-                transition={{ duration: 0.4, type: "spring", bounce: 0.5 }}
-              >
-                <div 
-                  className="absolute inset-0 rounded-full bg-gradient-to-br from-white/20 to-white/5 backdrop-blur-md border-[2px] border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.3)] flex items-center justify-center overflow-hidden transition-all duration-300"
-                  style={{
-                    borderColor: isHovered ? cert.color : 'rgba(255,255,255,0.2)',
-                    boxShadow: isHovered ? `0 0 30px ${cert.color}40, inset 0 0 20px ${cert.color}20` : '0 8px 32px rgba(0,0,0,0.3)'
-                  }}
-                >
-                  {/* Internal glare for glass/metal effect */}
-                  <div className="absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-white/30 to-transparent rounded-t-full" />
-                  
-                  <cert.Icon 
-                    className="relative z-10 transition-all duration-300" 
-                    style={{ 
-                      width: cert.size * 0.4, 
-                      height: cert.size * 0.4,
-                      color: isHovered ? cert.color : 'rgba(255,255,255,0.7)'
-                    }} 
-                  />
-                </div>
-              </motion.div>
+          <AnimatePresence mode="popLayout">
+            {certData.map((cert, index) => {
+              // Calculate relative position to center
+              const offset = (index - currentIndex + certData.length) % certData.length;
+              // Normalize offset to handle wrap around smoothly
+              let normalizedOffset = offset;
+              if (offset > certData.length / 2) {
+                normalizedOffset = offset - certData.length;
+              }
 
-              {/* Tooltip */}
-              <AnimatePresence>
-                {isHovered && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10, scale: 0.9 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: 10, scale: 0.9 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute top-[110%] left-1/2 -translate-x-1/2 w-[250px] bg-[var(--color-surface)] border border-white/10 rounded-xl p-4 shadow-2xl z-[100] pointer-events-none"
-                    style={{ 
-                      boxShadow: `0 20px 40px -10px rgba(0,0,0,0.8), 0 0 20px ${cert.color}20`
+              const isActive = normalizedOffset === 0;
+              const isAdjacent = Math.abs(normalizedOffset) === 1;
+
+              // Do not render cards that are too far away
+              if (Math.abs(normalizedOffset) > 2) return null;
+
+              return (
+                <motion.div
+                  key={cert.id}
+                  className="absolute top-1/2 left-1/2 w-[320px] sm:w-[400px] h-[280px] -translate-x-1/2 -translate-y-1/2 cursor-pointer"
+                  style={{ originX: 0.5, originY: 0.5 }}
+                  initial={false}
+                  animate={{
+                    x: `calc(-50% + ${normalizedOffset * 60}%)`,
+                    y: "-50%",
+                    scale: isActive ? 1 : 0.8 - Math.abs(normalizedOffset) * 0.1,
+                    rotateY: normalizedOffset * -25, // Turn cards towards center
+                    zIndex: 50 - Math.abs(normalizedOffset),
+                    opacity: isActive ? 1 : isAdjacent ? 0.6 : 0.2,
+                    filter: isActive ? 'blur(0px)' : 'blur(4px)',
+                  }}
+                  transition={{
+                    type: "spring",
+                    stiffness: 200,
+                    damping: 25,
+                    mass: 1
+                  }}
+                  onClick={() => setCurrentIndex(index)}
+                >
+                  {/* Glassmorphic Card */}
+                  <div 
+                    className="w-full h-full rounded-3xl p-8 flex flex-col justify-between relative overflow-hidden transition-all duration-300"
+                    style={{
+                      background: isActive 
+                        ? 'rgba(255, 255, 255, 0.05)' 
+                        : 'rgba(20, 20, 20, 0.5)',
+                      backdropFilter: 'blur(16px)',
+                      border: isActive 
+                        ? `1px solid ${cert.color}60` 
+                        : '1px solid rgba(255, 255, 255, 0.05)',
+                      boxShadow: isActive 
+                        ? `0 20px 50px -10px rgba(0,0,0,0.5), inset 0 0 30px ${cert.color}20` 
+                        : 'none'
                     }}
                   >
-                    <div className="flex items-center gap-2 mb-2">
-                      <Award className="w-4 h-4" style={{ color: cert.color }} />
-                      <span className="text-xs uppercase tracking-wider font-mono text-[var(--color-text-muted)]">{cert.issuer}</span>
+                    {/* Top Section */}
+                    <div className="flex justify-between items-start z-10 relative">
+                      <div 
+                        className="w-14 h-14 rounded-2xl flex items-center justify-center"
+                        style={{ background: `${cert.color}20`, border: `1px solid ${cert.color}40` }}
+                      >
+                        <cert.Icon className="w-7 h-7" style={{ color: cert.color }} />
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-white/5 border border-white/10 px-3 py-1 rounded-full">
+                        <Award className="w-3.5 h-3.5 text-[var(--color-text-muted)]" />
+                        <span className="text-xs font-mono text-[var(--color-text-muted)] uppercase tracking-wider">{cert.date}</span>
+                      </div>
                     </div>
-                    <h4 className="text-white font-bold text-sm leading-tight mb-2">{cert.title}</h4>
-                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/10">
-                      <span className="text-xs font-mono text-[var(--color-text-muted)]">Issued: {cert.date}</span>
-                      <span className="text-[0.65rem] font-bold uppercase tracking-wider text-[var(--color-primary)] flex items-center">
-                        Verify <ChevronRight className="w-3 h-3 ml-0.5" />
-                      </span>
+
+                    {/* Content Section */}
+                    <div className="z-10 relative mt-6">
+                      <p className="text-sm font-mono text-[var(--color-text-muted)] mb-2 uppercase tracking-wide">
+                        {cert.issuer}
+                      </p>
+                      <h3 className="text-xl sm:text-2xl font-bold text-white leading-tight">
+                        {cert.title}
+                      </h3>
                     </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          );
-        })}
-        
-        {/* Helper Text */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 font-mono text-xs text-[var(--color-text-muted)] opacity-50 flex items-center gap-2 pointer-events-none">
-          <span className="w-2 h-2 rounded-full bg-[var(--color-primary)] animate-pulse" />
-          Hover over badges to view details
+
+                    {/* Bottom Action (Only visible on active) */}
+                    <motion.div 
+                      className="mt-6 flex items-center gap-2 text-sm font-bold uppercase tracking-widest z-10 relative cursor-pointer group w-fit"
+                      style={{ color: cert.color }}
+                      animate={{ opacity: isActive ? 1 : 0, y: isActive ? 0 : 10 }}
+                    >
+                      View Credential
+                      <ExternalLink className="w-4 h-4 transition-transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                    </motion.div>
+
+                    {/* Premium Glare Effect */}
+                    {isActive && (
+                      <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-white/5 blur-[80px] rounded-full pointer-events-none" />
+                    )}
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
+        </div>
+
+        {/* Carousel Controls */}
+        <div className="flex items-center justify-center gap-6 mt-8">
+          <button 
+            onClick={handlePrev}
+            className="w-12 h-12 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all active:scale-95"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+          
+          <div className="flex gap-2">
+            {certData.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setCurrentIndex(idx)}
+                className={`transition-all duration-300 rounded-full ${
+                  idx === currentIndex 
+                    ? 'w-8 h-2 bg-white' 
+                    : 'w-2 h-2 bg-white/20 hover:bg-white/40'
+                }`}
+              />
+            ))}
+          </div>
+
+          <button 
+            onClick={handleNext}
+            className="w-12 h-12 rounded-full border border-white/10 bg-white/5 flex items-center justify-center text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all active:scale-95"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
         </div>
       </div>
     </section>
