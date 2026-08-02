@@ -15,15 +15,36 @@ export default function GitHubActivity() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const cachedData = localStorage.getItem('github_stats');
+    const cachedTime = localStorage.getItem('github_stats_time');
+    
+    // Check if we have cached data that is less than 1 hour old
+    if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime)) < 3600000) {
+      setStats(JSON.parse(cachedData));
+      setLoading(false);
+      return;
+    }
+
     fetch('https://api.github.com/users/Dawit764')
       .then((res) => res.json())
       .then((data) => {
-        setStats({
+        // GitHub returns a message if rate limited
+        if (data.message && data.message.includes("API rate limit exceeded")) {
+          console.warn("GitHub API rate limit exceeded. Showing placeholder or cached data.");
+          setLoading(false);
+          return;
+        }
+        
+        const newStats = {
           followers: data.followers || 0,
           following: data.following || 0,
           public_repos: data.public_repos || 0,
           public_gists: data.public_gists || 0,
-        });
+        };
+        
+        setStats(newStats);
+        localStorage.setItem('github_stats', JSON.stringify(newStats));
+        localStorage.setItem('github_stats_time', Date.now().toString());
         setLoading(false);
       })
       .catch((err) => {
