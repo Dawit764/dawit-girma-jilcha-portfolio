@@ -1,6 +1,77 @@
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'motion/react';
 import { useRef } from 'react';
-import { GraduationCap } from 'lucide-react';
+import { GraduationCap, Baby, BookOpen, Code2, Rocket, MapPin, Calendar, Briefcase } from 'lucide-react';
+
+const TiltCard = ({ item, isEven }: { item: any, isEven: boolean }) => {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x);
+  const mouseYSpring = useSpring(y);
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7.5deg", "-7.5deg"]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7.5deg", "7.5deg"]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0, x: isEven ? 50 : -50 }}
+      whileInView={{ opacity: 1, x: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.6, type: "spring", bounce: 0.4 }}
+      className="w-full md:w-[45%] pl-12 md:pl-0"
+      style={{ perspective: "1000px" }}
+    >
+      <motion.div
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        style={{
+          rotateY,
+          rotateX,
+          transformStyle: "preserve-3d",
+        }}
+        className={`relative bg-[var(--color-surface)]/60 backdrop-blur-sm border border-white/5 p-8 rounded-2xl transition-colors duration-300 hover:border-[var(--color-primary)]/40 hover:shadow-[0_10px_40px_rgba(0,245,255,0.15)] text-left w-full cursor-default ${isEven ? 'md:text-left' : 'md:text-right'}`}
+      >
+        <div style={{ transform: "translateZ(30px)" }} className={`flex flex-col ${isEven ? 'md:items-start' : 'md:items-end'} mb-4`}>
+          <div className="flex items-center gap-2 mb-3 bg-white/5 px-3 py-1 rounded-full w-fit">
+            <Calendar className="w-3.5 h-3.5 text-[var(--color-primary)]" />
+            <span className="font-mono text-[var(--color-primary)] font-medium text-sm">{item.year}</span>
+          </div>
+          <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+          
+          <div className="flex items-center gap-2 text-[var(--color-text-muted)] text-[0.95rem] mb-4 bg-black/20 px-3 py-1.5 rounded-lg border border-white/5 w-fit">
+            {item.iconType === 'location' ? <MapPin className="w-4 h-4" /> : <Briefcase className="w-4 h-4" />}
+            <span className="italic">{item.subtitle}</span>
+          </div>
+          
+          <p className="text-[var(--color-text-muted)] leading-relaxed">{item.desc}</p>
+        </div>
+        
+        {/* Glow behind the card on hover */}
+        <div 
+          className="absolute inset-0 -z-10 bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] rounded-2xl opacity-0 blur-xl transition-opacity duration-500 hover:opacity-10"
+          style={{ transform: "translateZ(-10px)" }}
+        />
+      </motion.div>
+    </motion.div>
+  );
+};
 
 export default function Journey() {
   const containerRef = useRef(null);
@@ -15,82 +86,94 @@ export default function Journey() {
     {
       year: "2006",
       title: "Early Beginnings",
-      subtitle: "Born in Nekemte, Ethiopia",
+      subtitle: "Nekemte, Ethiopia",
+      iconType: "location",
+      icon: Baby,
       desc: "Developed an early fascination with physical computer components and interactive user grids from a very young age."
     },
     {
       year: "2012 - 2024",
       title: "Bethel Academy",
       subtitle: "Primary & Secondary Foundations",
+      iconType: "school",
+      icon: BookOpen,
       desc: "Discovered an affinity for mathematics, logic, and self-directed coding while establishing solid analytical foundations."
     },
     {
       year: "2025",
       title: "Addis Ababa University",
-      subtitle: "Joined AAIT - BSc Computer Science",
+      subtitle: "BSc Computer Science",
+      iconType: "school",
+      icon: GraduationCap,
       desc: "Admitted into Ethiopia's flagship technology institute to formalize knowledge in computational structures."
     },
     {
       year: "Present",
       title: "Practical Acceleration",
-      subtitle: "AI & Front-End Web Engineering Focus",
+      subtitle: "AI & Web Engineering Focus",
+      iconType: "work",
+      icon: Code2,
       desc: "Building and testing scalable vanilla UI systems, developing custom ML models, and preparing for professional software engineering internships."
     },
     {
       year: "2030 & Beyond",
       title: "Future Vistas",
-      subtitle: "Senior Software Architect / AI Specialist",
+      subtitle: "Software Architect / AI Specialist",
+      iconType: "work",
+      icon: Rocket,
       desc: "Aspiring to engineer highly localized intelligent platforms that directly address socio-economic opportunities across Healthcare, Fintech, and Education."
     }
   ];
 
   return (
     <>
-      <section id="journey" className="relative py-[100px] max-w-[1200px] mx-auto px-6 z-10">
-        <div className="font-mono text-[0.8rem] text-[var(--color-primary)] uppercase tracking-[0.2em] mb-3">
+      <section id="journey" className="relative py-[100px] max-w-[1200px] mx-auto px-6 z-10 overflow-hidden">
+        <div className="font-mono text-[0.8rem] text-[var(--color-primary)] uppercase tracking-[0.2em] mb-3 text-center md:text-left">
           04 // Narrative
         </div>
         
-        <h2 className="text-4xl md:text-[2.5rem] font-bold text-white mb-20">
+        <h2 className="text-4xl md:text-[2.5rem] font-bold text-white mb-20 text-center md:text-left">
           My <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]">Journey</span>
         </h2>
         
-        <div ref={containerRef} className="relative pl-8 md:pl-0">
-          {/* Timeline Line */}
-          <div className="absolute left-[31px] md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-[2px] bg-white/10 rounded-full" />
+        <div ref={containerRef} className="relative py-10">
+          {/* Base Timeline Line (Dim) */}
+          <div className="absolute left-[20px] md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-[2px] bg-white/10 rounded-full" />
           
+          {/* Active Timeline Line (Bright) */}
           <motion.div 
-            className="absolute left-[31px] md:left-1/2 md:-translate-x-1/2 top-0 w-[2px] bg-gradient-to-b from-[var(--color-primary)] to-[var(--color-secondary)] rounded-full"
+            className="absolute left-[20px] md:left-1/2 md:-translate-x-1/2 top-0 w-[2px] bg-gradient-to-b from-[var(--color-primary)] to-[var(--color-secondary)] rounded-full shadow-[0_0_15px_var(--color-primary)] z-10"
             style={{ height: timelineHeight }}
           />
           
-          <div className="flex flex-col gap-16 relative z-10">
+          {/* Glowing Head Particle on Active Line */}
+          <motion.div 
+            className="absolute left-[16px] md:left-1/2 md:-translate-x-1/2 w-[10px] h-[20px] bg-white rounded-full blur-[3px] shadow-[0_0_20px_10px_var(--color-primary)] z-10"
+            style={{ top: timelineHeight, y: "-100%" }}
+          />
+          
+          <div className="flex flex-col gap-24 relative z-20">
             {journeyItems.map((item, idx) => {
               const isEven = idx % 2 === 0;
+              const Icon = item.icon;
               return (
                 <div key={idx} className={`relative flex md:justify-between items-center w-full ${isEven ? 'md:flex-row-reverse' : ''}`}>
                   
-                  {/* Indicator Dot */}
-                  <div className="absolute left-[-8px] md:left-1/2 md:-translate-x-1/2 w-4 h-4 rounded-full bg-[var(--color-background)] border-2 border-[var(--color-primary)] shadow-[0_0_10px_var(--color-primary)] z-20" />
+                  {/* Interactive Indicator Dot */}
+                  <motion.div 
+                    initial={{ scale: 0.8, backgroundColor: "var(--color-background)", borderColor: "rgba(255,255,255,0.2)", boxShadow: "0 0 0px transparent", color: "rgba(255,255,255,0.4)" }}
+                    whileInView={{ scale: 1.1, backgroundColor: "var(--color-surface)", borderColor: "var(--color-primary)", boxShadow: "0 0 30px var(--color-primary)", color: "var(--color-primary)" }}
+                    viewport={{ once: false, margin: "-50% 0px -50% 0px" }}
+                    transition={{ duration: 0.4 }}
+                    className="absolute left-[-2px] md:left-1/2 md:-translate-x-1/2 w-[46px] h-[46px] rounded-full border-2 flex items-center justify-center z-30 transition-colors"
+                  >
+                    <Icon className="w-5 h-5" />
+                  </motion.div>
                   
                   <div className="hidden md:block w-[45%]" />
                   
-                  <motion.div 
-                    initial={{ opacity: 0, x: isEven ? 50 : -50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true, margin: "-100px" }}
-                    transition={{ duration: 0.6 }}
-                    className="w-full md:w-[45%] pl-8 md:pl-0"
-                  >
-                    <div className={`bg-[var(--color-surface)]/60 backdrop-blur-sm border border-white/5 p-8 rounded-2xl transition-all duration-300 hover:-translate-y-1 hover:border-[var(--color-primary)]/30 hover:shadow-xl text-left ${isEven ? 'md:text-left' : 'md:text-right'}`}>
-                      <div className={`flex flex-col ${isEven ? 'md:items-start' : 'md:items-end'} mb-4`}>
-                        <span className="font-mono text-[var(--color-primary)] font-medium mb-2">{item.year}</span>
-                        <h3 className="text-2xl font-bold text-white mb-1">{item.title}</h3>
-                        <span className="text-[0.95rem] text-[var(--color-text-muted)] italic">{item.subtitle}</span>
-                      </div>
-                      <p className="text-[var(--color-text-muted)] leading-relaxed">{item.desc}</p>
-                    </div>
-                  </motion.div>
+                  <TiltCard item={item} isEven={isEven} />
+                  
                 </div>
               );
             })}
