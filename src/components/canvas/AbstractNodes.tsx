@@ -8,23 +8,23 @@ export default function AbstractNodes() {
   
   useFrame((state, delta) => {
     if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.2;
-      meshRef.current.rotation.y += delta * 0.3;
+      meshRef.current.rotation.x += delta * 0.05;
+      meshRef.current.rotation.y += delta * 0.1;
     }
   });
 
   return (
     <>
-      <Float speed={2} rotationIntensity={1.5} floatIntensity={2}>
+      <Float speed={1} rotationIntensity={0.5} floatIntensity={1}>
         <mesh ref={meshRef}>
           <icosahedronGeometry args={[2.5, 1]} />
           <meshStandardMaterial 
-            color="#00f5ff" 
+            color="#CFA85E" 
             wireframe 
             transparent 
-            opacity={0.3}
-            emissive="#00f5ff"
-            emissiveIntensity={0.8}
+            opacity={0.15}
+            emissive="#CFA85E"
+            emissiveIntensity={0.3}
           />
         </mesh>
       </Float>
