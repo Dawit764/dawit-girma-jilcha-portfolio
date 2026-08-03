@@ -25,23 +25,18 @@ export default function GitHubActivity() {
       return;
     }
 
-    fetch('https://api.github.com/users/Dawit764')
-      .then((res) => res.json())
-      .then((data) => {
-        // GitHub returns a message if rate limited
-        if (data.message && data.message.includes("API rate limit exceeded")) {
-          console.warn("GitHub API rate limit exceeded. Showing placeholder or cached data.");
-          setLoading(false);
-          return;
-        }
+    const fetchStats = async () => {
+      try {
+        // Try to fetch from our serverless function first (works in production/Vercel)
+        const res = await fetch('/api/github-stats');
+        if (!res.ok) throw new Error('Serverless function not available');
         
-        // Offset to account for private repositories not returned by the public API
-        const PRIVATE_REPOS_COUNT = 1;
-
+        const data = await res.json();
+        
         const newStats = {
           followers: data.followers || 0,
           following: data.following || 0,
-          public_repos: (data.public_repos || 0) + PRIVATE_REPOS_COUNT,
+          public_repos: data.public_repos || 0, // Serverless API already handles private repo math
           public_gists: data.public_gists || 0,
         };
         
@@ -49,11 +44,41 @@ export default function GitHubActivity() {
         localStorage.setItem('github_stats', JSON.stringify(newStats));
         localStorage.setItem('github_stats_time', Date.now().toString());
         setLoading(false);
-      })
-      .catch((err) => {
-        console.error("Failed to fetch GitHub stats", err);
-        setLoading(false);
-      });
+      } catch (err) {
+        console.warn("Falling back to public GitHub API", err);
+        // Fallback to public GitHub API if serverless function fails or isn't available locally
+        fetch('https://api.github.com/users/Dawit764')
+          .then((res) => res.json())
+          .then((data) => {
+            if (data.message && data.message.includes("API rate limit exceeded")) {
+              console.warn("GitHub API rate limit exceeded. Showing placeholder or cached data.");
+              setLoading(false);
+              return;
+            }
+            
+            // Offset to account for private repositories not returned by the public API
+            const PRIVATE_REPOS_COUNT = 1;
+
+            const newStats = {
+              followers: data.followers || 0,
+              following: data.following || 0,
+              public_repos: (data.public_repos || 0) + PRIVATE_REPOS_COUNT,
+              public_gists: data.public_gists || 0,
+            };
+            
+            setStats(newStats);
+            localStorage.setItem('github_stats', JSON.stringify(newStats));
+            localStorage.setItem('github_stats_time', Date.now().toString());
+            setLoading(false);
+          })
+          .catch((fallbackErr) => {
+            console.error("Failed to fetch GitHub stats", fallbackErr);
+            setLoading(false);
+          });
+      }
+    };
+
+    fetchStats();
   }, []);
 
   // Custom theme using the portfolio's cyan primary color
