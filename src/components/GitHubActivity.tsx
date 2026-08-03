@@ -35,10 +35,13 @@ export default function GitHubActivity() {
           return;
         }
         
+        // Offset to account for private repositories not returned by the public API
+        const PRIVATE_REPOS_COUNT = 1;
+
         const newStats = {
           followers: data.followers || 0,
           following: data.following || 0,
-          public_repos: data.public_repos || 0,
+          public_repos: (data.public_repos || 0) + PRIVATE_REPOS_COUNT,
           public_gists: data.public_gists || 0,
         };
         
