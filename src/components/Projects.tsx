@@ -84,7 +84,12 @@ export default function Projects() {
   }
 
   if (projectsList.length === 0) {
-    return null;
+    return (
+      <section id="featured-projects" className="relative py-[100px] flex flex-col justify-center items-center h-[50vh] z-10">
+        <h2 className="text-3xl font-bold text-white mb-4">Featured Projects</h2>
+        <p className="text-[var(--color-text-muted)]">Check back soon for updates!</p>
+      </section>
+    );
   }
 
   return (

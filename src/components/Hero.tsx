@@ -97,8 +97,8 @@ export default function Hero() {
         
         {/* Visuals */}
         <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
           className="flex justify-center items-center relative w-full h-[350px] sm:h-[450px] lg:h-[500px] order-1 lg:order-2"
         >

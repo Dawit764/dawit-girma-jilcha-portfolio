@@ -25,7 +25,12 @@
     background-color: var(--color-background);
     color: var(--color-text-main);
     font-family: var(--font-sans);
+  }
+
+  #root {
     overflow-x: hidden;
+    position: relative;
+    width: 100%;
   }
 
   h1, h2, h3, h4, h5, h6 {
