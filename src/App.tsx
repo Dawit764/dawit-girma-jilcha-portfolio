@@ -7,25 +7,16 @@ import React, { Suspense } from 'react';
 import Background from './components/Background';
 import Header from './components/Header';
 import Hero from './components/Hero';
-
-// Lazy load below-the-fold components to improve initial load speed
-const Mission = React.lazy(() => import('./components/Mission'));
-const Stats = React.lazy(() => import('./components/Stats'));
-const Skills = React.lazy(() => import('./components/Skills'));
-const Projects = React.lazy(() => import('./components/Projects'));
-const GitHubActivity = React.lazy(() => import('./components/GitHubActivity'));
-const Blog = React.lazy(() => import('./components/Blog'));
-const Journey = React.lazy(() => import('./components/Journey'));
-const Certifications = React.lazy(() => import('./components/Certifications'));
-const Contact = React.lazy(() => import('./components/Contact'));
-const Footer = React.lazy(() => import('./components/Footer'));
-
-// Minimal spinner that doesn't block or flash violently
-const SectionLoader = () => (
-  <div className="w-full h-24 flex items-center justify-center opacity-50">
-    <div className="w-6 h-6 border-2 border-[var(--color-primary)] border-t-transparent rounded-full animate-spin"></div>
-  </div>
-);
+import Mission from './components/Mission';
+import Stats from './components/Stats';
+import Skills from './components/Skills';
+import Projects from './components/Projects';
+import GitHubActivity from './components/GitHubActivity';
+import Blog from './components/Blog';
+import Journey from './components/Journey';
+import Certifications from './components/Certifications';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -40,24 +31,19 @@ function App() {
       <main className="relative z-10">
         <Hero />
         
-        {/* Suspense boundary for everything below the fold */}
-        <Suspense fallback={<SectionLoader />}>
-          <Mission />
-          <Stats />
-          <Skills />
-          <Projects />
-          <GitHubActivity />
-          <Blog />
-          <Journey />
-          <Certifications />
-          <Contact />
-        </Suspense>
+        <Mission />
+        <Stats />
+        <Skills />
+        <Projects />
+        <GitHubActivity />
+        <Blog />
+        <Journey />
+        <Certifications />
+        <Contact />
       </main>
 
       {/* Footer */}
-      <Suspense fallback={null}>
-        <Footer />
-      </Suspense>
+      <Footer />
     </div>
   );
 }

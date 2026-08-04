@@ -1,7 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { motion } from 'motion/react';
 import { ChevronRight, Mail } from 'lucide-react';
-import Hero3D from './canvas/Hero3D';
+
+const Hero3D = lazy(() => import('./canvas/Hero3D'));
 
 export default function Hero() {
   const words = [
@@ -102,7 +103,9 @@ export default function Hero() {
           className="flex justify-center items-center relative w-full h-[350px] sm:h-[450px] lg:h-[500px] order-1 lg:order-2"
         >
           {/* 3D Canvas Background for this column */}
-          <Hero3D />
+          <Suspense fallback={null}>
+            <Hero3D />
+          </Suspense>
           
           <div className="relative w-[240px] h-[240px] sm:w-[320px] sm:h-[320px] lg:w-[380px] lg:h-[380px] rounded-full z-10 bg-[var(--color-surface)] border border-[var(--color-primary)]/10 shadow-[0_15px_60px_rgba(0,245,255,0.12),0_0_80px_rgba(124,58,237,0.08)] flex items-center justify-center group overflow-hidden">
             {/* Glow border on hover */}
