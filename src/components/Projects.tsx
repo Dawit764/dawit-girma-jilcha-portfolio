@@ -22,6 +22,35 @@ interface Project {
   client: string;
   duration: string;
 }
+const FALLBACK_PROJECTS: Project[] = [
+  {
+    _id: "paper-bag",
+    id: "paper-bag",
+    title: "Paper Bag Business Website",
+    tagline: "Eco-Friendly Packaging Digital Showroom",
+    badges: ["HTML5", "CSS3", "JavaScript", "Responsive Design", "UI/UX"],
+    problem: "A sustainable packaging startup in Addis Ababa needed a professional digital platform to showcase their environmentally-friendly paper bags, explain bespoke manufacturing options, and convert wholesale orders efficiently.",
+    solution: "Developed a stunning, modern business portal incorporating product visualizers, interactive custom-size configurators, and a optimized layout that showcases paper bag models in high fidelity.",
+    designProcess: "Designed using a minimalist, sustainable visual language. I focused on clean off-white elements with green-accented dark boards, generous breathing room, structured specifications grids, and fluid scroll-linked item sizing.",
+    features: [
+      "Interactive Size Configurator: Allows corporate clients to visualize paper bag dimensions (Small, Medium, Large) dynamically in a real-time responsive visual card.",
+      "Eco-Impact Counter: Calculates plastic waste saved based on hypothetical paper bag purchase volume to drive customer conversion.",
+      "Wholesale Order Portal: A fully integrated, elegant contact form that collects volume demands and outputs precise spec lists.",
+      "Fluid Mobile layout: Optimized to ensure quick rendering on lower-speed regional networks across Ethiopia."
+    ],
+    challenges: "Managing high-resolution product photographs without affecting page loading times. Solved by designing vector illustration overlays and leveraging modern CSS gradients with tiny compressed PNG sprites.",
+    lessons: "I learned how to structure a corporate commercial catalog purely using CSS Grid and clean, lightweight flexboxes, proving that premium design doesn't require heavy bloated libraries.",
+    gallery: [
+      "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=600",
+      "https://images.unsplash.com/photo-1607344645866-009c320c5ab8?auto=format&fit=crop&q=80&w=600"
+    ],
+    github: "https://github.com/Dawit764/zelaqi-pack-ethiopia",
+    demo: "https://zelaqi-pack-ethiopia.netlify.app/",
+    location: "Addis Ababa, Ethiopia",
+    client: "Local Sustainable Packaging Startup",
+    duration: "4 Weeks"
+  }
+];
 
 export default function Projects() {
   const [projectsList, setProjectsList] = useState<Project[]>([]);
@@ -35,11 +64,16 @@ export default function Projects() {
     sanityClient
       .fetch(`*[_type == "project" && !(_id in path("drafts.**"))] | order(order asc)`)
       .then((data) => {
-        setProjectsList(data);
+        if (data && data.length > 0) {
+          setProjectsList(data);
+        } else {
+          setProjectsList(FALLBACK_PROJECTS);
+        }
         setLoading(false);
       })
       .catch((error) => {
         console.error('Error fetching projects:', error);
+        setProjectsList(FALLBACK_PROJECTS);
         setLoading(false);
       });
   }, []);
@@ -124,7 +158,7 @@ export default function Projects() {
               {projectsList.map((project, idx) => {
                 const isActive = idx === activeIndex;
                 const coverImage = project.gallery && project.gallery.length > 0 
-                  ? urlFor(project.gallery[0]).width(800).url() 
+                  ? (typeof project.gallery[0] === 'string' ? project.gallery[0] : urlFor(project.gallery[0]).width(800).url()) 
                   : '';
 
                 return (
@@ -225,7 +259,7 @@ export default function Projects() {
               
               {selectedProject.gallery && selectedProject.gallery.length > 0 && (
                 <img 
-                  src={urlFor(selectedProject.gallery[0]).width(1200).url()} 
+                  src={typeof selectedProject.gallery[0] === 'string' ? selectedProject.gallery[0] : urlFor(selectedProject.gallery[0]).width(1200).url()} 
                   alt={selectedProject.title} 
                   className="w-full h-auto rounded-3xl mb-12 border border-white/10 shadow-2xl object-cover max-h-[600px]" 
                 />
