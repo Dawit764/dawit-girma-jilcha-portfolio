@@ -50,7 +50,7 @@ const FALLBACK_PROJECTS: Project[] = [
       "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=600"
     ],
     github: "https://github.com/Dawit764/addis-consult-mvp",
-    demo: "https://addis-consult-mvp.vercel.app/",
+    demo: "https://addis-consult-mvp-psi.vercel.app",
     location: "Addis Ababa, Ethiopia",
     client: "Consultancy Firm",
     duration: "2 Weeks"
