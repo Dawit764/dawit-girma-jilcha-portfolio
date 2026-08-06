@@ -4,6 +4,7 @@
  */
 
 import React, { Suspense } from 'react';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import Background from './components/Background';
 import Header from './components/Header';
 import Hero from './components/Hero';
@@ -20,31 +21,33 @@ import Footer from './components/Footer';
 
 function App() {
   return (
-    <div className="relative min-h-screen bg-[var(--color-background)] font-sans text-white overflow-hidden selection:bg-[var(--color-primary)] selection:text-[var(--color-background)]">
-      {/* Global Background Layer */}
-      <Background />
-      
-      {/* Navigation */}
-      <Header />
-
-      {/* Main Content */}
-      <main className="relative z-10">
-        <Hero />
+    <TooltipProvider>
+      <div className="relative min-h-screen bg-background font-sans text-foreground overflow-hidden selection:bg-primary selection:text-primary-foreground">
+        {/* Global Background Layer */}
+        <Background />
         
-        <Mission />
-        <Stats />
-        <Skills />
-        <Projects />
-        <GitHubActivity />
-        <Blog />
-        <Journey />
-        <Certifications />
-        <Contact />
-      </main>
+        {/* Navigation */}
+        <Header />
 
-      {/* Footer */}
-      <Footer />
-    </div>
+        {/* Main Content */}
+        <main className="relative z-10">
+          <Hero />
+          
+          <Mission />
+          <Stats />
+          <Skills />
+          <Projects />
+          <GitHubActivity />
+          <Blog />
+          <Journey />
+          <Certifications />
+          <Contact />
+        </main>
+
+        {/* Footer */}
+        <Footer />
+      </div>
+    </TooltipProvider>
   );
 }
 

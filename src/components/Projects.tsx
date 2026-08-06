@@ -2,10 +2,14 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { ChevronRight, ArrowLeft, ExternalLink, Github, Loader2 } from 'lucide-react';
 import { sanityClient, urlFor } from '../sanity';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 interface Project {
   _id: string;
-  id?: string; // fallback
+  id?: string;
   title: string;
   tagline: string;
   badges: string[];
@@ -22,6 +26,7 @@ interface Project {
   client: string;
   duration: string;
 }
+
 const FALLBACK_PROJECTS: Project[] = [
   {
     _id: "paper-bag",
@@ -33,7 +38,7 @@ const FALLBACK_PROJECTS: Project[] = [
     solution: "Developed a stunning, modern business portal incorporating product visualizers, interactive custom-size configurators, and a optimized layout that showcases paper bag models in high fidelity.",
     designProcess: "Designed using a minimalist, sustainable visual language. I focused on clean off-white elements with green-accented dark boards, generous breathing room, structured specifications grids, and fluid scroll-linked item sizing.",
     features: [
-      "Interactive Size Configurator: Allows corporate clients to visualize paper bag dimensions (Small, Medium, Large) dynamically in a real-time responsive visual card.",
+      "Interactive Size Configurator: Allows corporate clients to visualize paper bag dimensions dynamically in a real-time responsive visual card.",
       "Eco-Impact Counter: Calculates plastic waste saved based on hypothetical paper bag purchase volume to drive customer conversion.",
       "Wholesale Order Portal: A fully integrated, elegant contact form that collects volume demands and outputs precise spec lists.",
       "Fluid Mobile layout: Optimized to ensure quick rendering on lower-speed regional networks across Ethiopia."
@@ -103,7 +108,6 @@ export default function Projects() {
     };
 
     container.addEventListener('scroll', handleScroll, { passive: true });
-    // Small delay to ensure layout is calculated before initial check
     setTimeout(handleScroll, 100);
     
     return () => container.removeEventListener('scroll', handleScroll);
@@ -112,7 +116,7 @@ export default function Projects() {
   if (loading) {
     return (
       <section id="featured-projects" className="relative py-[100px] flex justify-center items-center h-screen z-10">
-        <Loader2 className="w-8 h-8 text-[var(--color-primary)] animate-spin" />
+        <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </section>
     );
   }
@@ -120,8 +124,8 @@ export default function Projects() {
   if (projectsList.length === 0) {
     return (
       <section id="featured-projects" className="relative py-[100px] flex flex-col justify-center items-center h-[50vh] z-10">
-        <h2 className="text-3xl font-bold text-white mb-4">Featured Projects</h2>
-        <p className="text-[var(--color-text-muted)]">Check back soon for updates!</p>
+        <h2 className="text-3xl font-bold text-foreground mb-4">Featured Projects</h2>
+        <p className="text-muted-foreground">Check back soon for updates!</p>
       </section>
     );
   }
@@ -140,12 +144,12 @@ export default function Projects() {
             className="w-full"
           >
             <div className="max-w-[1200px] mx-auto px-6 mb-12 text-center">
-              <div className="font-mono text-[0.8rem] text-[var(--color-primary)] uppercase tracking-[0.2em] mb-3">
+              <div className="font-mono text-[0.8rem] text-primary uppercase tracking-[0.2em] mb-3">
                 03 // Creations
               </div>
               
-              <h2 className="text-4xl md:text-[2.5rem] font-bold text-white">
-                Selected <span className="text-transparent bg-clip-text bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-accent)]">Projects</span>
+              <h2 className="text-4xl md:text-[2.5rem] font-bold text-foreground">
+                Selected <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00d2ff]">Projects</span>
               </h2>
             </div>
             
@@ -164,7 +168,7 @@ export default function Projects() {
                 return (
                   <motion.div 
                     key={project._id}
-                    className={`relative flex-shrink-0 w-[85vw] sm:w-[80vw] md:w-[50vw] max-w-[700px] h-[420px] md:h-[500px] snap-center rounded-[2rem] overflow-hidden cursor-pointer transition-all duration-700 ease-out border border-white/10 ${isActive ? 'scale-100 opacity-100 shadow-[0_0_50px_rgba(0,245,255,0.15)] z-10' : 'scale-[0.85] opacity-30 hover:opacity-50 z-0'}`}
+                    className={`relative flex-shrink-0 w-[85vw] sm:w-[80vw] md:w-[50vw] max-w-[700px] h-[420px] md:h-[500px] snap-center rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-700 ease-out border border-white/5 ${isActive ? 'scale-100 opacity-100 shadow-[0_30px_60px_-15px_rgba(var(--primary),0.2)] z-10' : 'scale-[0.85] opacity-30 hover:opacity-50 z-0'}`}
                     onClick={() => setSelectedProject(project)}
                   >
                     {coverImage && (
@@ -176,28 +180,28 @@ export default function Projects() {
                         referrerPolicy="no-referrer" 
                       />
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-background)] via-[var(--color-background)]/70 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
                     
                     <div className={`absolute inset-x-0 bottom-0 p-6 md:p-12 flex flex-col items-center text-center transition-all duration-500 delay-100 ${isActive ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
                       <div className="flex flex-wrap justify-center gap-2 mb-4">
                         {(project.badges || []).slice(0, 3).map(badge => (
-                          <span key={badge} className="px-3 py-1 bg-[var(--color-primary)]/20 backdrop-blur-md text-[var(--color-primary)] text-xs font-mono rounded-full border border-[var(--color-primary)]/30">
+                          <Badge key={badge} variant="secondary" className="px-3 py-1 bg-primary/20 hover:bg-primary/30 backdrop-blur-md text-primary font-mono border border-primary/30 shadow-[0_0_10px_rgba(0,0,0,0.1)]">
                             {badge}
-                          </span>
+                          </Badge>
                         ))}
                       </div>
                       
-                      <h3 className="text-3xl md:text-4xl font-bold text-white mb-4 drop-shadow-lg">{project.title}</h3>
-                      <p className="text-[var(--color-text-muted)] leading-relaxed mb-8 line-clamp-2 max-w-lg">
+                      <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-4 drop-shadow-lg">{project.title}</h3>
+                      <p className="text-muted-foreground leading-relaxed mb-8 line-clamp-2 max-w-lg font-light">
                         {project.tagline}
                       </p>
                       
-                      <button 
-                        className="inline-flex items-center gap-2 text-[var(--color-background)] font-bold bg-gradient-to-r from-[var(--color-primary)] to-[var(--color-secondary)] px-8 py-3 rounded-full transition-transform hover:scale-105 shadow-lg shadow-[var(--color-primary)]/20"
+                      <Button 
+                        className="rounded-full px-8 py-6 bg-gradient-to-r from-primary to-[#00d2ff] text-primary-foreground font-bold shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 hover:shadow-primary/40 active:scale-[0.98]"
                       >
                         Explore Project
-                        <ChevronRight className="w-5 h-5" />
-                      </button>
+                        <ChevronRight className="w-5 h-5 ml-2" />
+                      </Button>
                     </div>
                   </motion.div>
                 );
@@ -209,7 +213,7 @@ export default function Projects() {
               {projectsList.map((_, idx) => (
                 <div 
                   key={idx} 
-                  className={`h-1.5 rounded-full transition-all duration-300 ${idx === activeIndex ? 'w-8 bg-[var(--color-primary)]' : 'w-2 bg-white/20'}`}
+                  className={`h-1.5 rounded-full transition-all duration-500 ease-out ${idx === activeIndex ? 'w-8 bg-primary shadow-[0_0_10px_var(--primary)]' : 'w-2 bg-white/20'}`}
                 />
               ))}
             </div>
@@ -218,77 +222,88 @@ export default function Projects() {
         ) : (
           <motion.div
             key="detail"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
+            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+            exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
+            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
             className="max-w-[1200px] mx-auto px-6 w-full"
           >
-            <div className="bg-[var(--color-surface)]/80 backdrop-blur-xl border border-[var(--color-primary)]/20 rounded-3xl p-6 md:p-12 shadow-2xl relative overflow-hidden">
-              <button 
+            <Card className="bg-card/80 backdrop-blur-2xl border-white/10 rounded-[3rem] p-6 md:p-12 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.5)] relative overflow-hidden">
+              <Button 
+                variant="ghost" 
                 onClick={() => setSelectedProject(null)}
-                className="inline-flex items-center gap-2 text-[var(--color-primary)] font-mono text-sm hover:text-white transition-colors mb-8 bg-white/5 px-4 py-2 rounded-full border border-white/10"
+                className="inline-flex items-center gap-2 text-primary font-mono text-sm hover:text-foreground transition-colors mb-8 bg-white/5 px-5 py-2.5 rounded-full border border-white/10 active:scale-[0.95]"
               >
-                <ArrowLeft className="w-4 h-4" />
+                <ArrowLeft className="w-4 h-4 mr-1" />
                 Back to Showcase
-              </button>
+              </Button>
               
               <div className="flex flex-wrap gap-2 mb-6">
                 {(selectedProject.badges || []).map(badge => (
-                  <span key={badge} className="px-3 py-1 bg-[var(--color-primary)]/10 text-[var(--color-primary)] text-xs font-mono rounded-full border border-[var(--color-primary)]/20">
+                  <Badge key={badge} variant="outline" className="px-3 py-1 bg-primary/5 text-primary text-xs font-mono rounded-full border-primary/20 backdrop-blur-md">
                     {badge}
-                  </span>
+                  </Badge>
                 ))}
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-4">{selectedProject.title}</h1>
-              <p className="text-xl md:text-2xl text-[var(--color-primary)] mb-8 font-display">{selectedProject.tagline}</p>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 tracking-tight">{selectedProject.title}</h1>
+              <p className="text-xl md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00d2ff] mb-8 font-display">{selectedProject.tagline}</p>
               
               <div className="flex flex-wrap gap-4 mb-12">
                 {selectedProject.demo && (
-                  <a href={selectedProject.demo} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-secondary)] text-[var(--color-background)] hover:shadow-[0_8px_30px_rgba(0,245,255,0.4)] transition-all hover:scale-105">
-                    <ExternalLink className="w-5 h-5" /> Launch Live Demo
-                  </a>
+                  <Button size="lg" asChild className="rounded-full px-8 h-14 font-bold bg-gradient-to-br from-primary to-[#00d2ff] text-primary-foreground hover:shadow-lg hover:shadow-primary/30 transition-all hover:scale-105 active:scale-[0.98]">
+                    <a href={selectedProject.demo} target="_blank" rel="noreferrer">
+                      <ExternalLink className="w-5 h-5 mr-2" /> Launch Live Demo
+                    </a>
+                  </Button>
                 )}
                 {selectedProject.github && (
-                  <a href={selectedProject.github} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 px-8 py-4 rounded-full font-bold bg-white/5 border border-white/10 hover:bg-white/10 transition-all text-white hover:scale-105">
-                    <Github className="w-5 h-5" /> View Source Code
-                  </a>
+                  <Button size="lg" variant="outline" asChild className="rounded-full px-8 h-14 font-bold bg-white/5 border-white/10 text-foreground hover:bg-white/10 hover:border-white/20 transition-all hover:scale-105 active:scale-[0.98] backdrop-blur-md">
+                    <a href={selectedProject.github} target="_blank" rel="noreferrer">
+                      <Github className="w-5 h-5 mr-2" /> View Source Code
+                    </a>
+                  </Button>
                 )}
               </div>
               
               {selectedProject.gallery && selectedProject.gallery.length > 0 && (
-                <img 
-                  src={typeof selectedProject.gallery[0] === 'string' ? selectedProject.gallery[0] : urlFor(selectedProject.gallery[0]).width(1200).url()} 
-                  alt={selectedProject.title} 
-                  className="w-full h-auto rounded-3xl mb-12 border border-white/10 shadow-2xl object-cover max-h-[600px]" 
-                />
+                <div className="relative group rounded-[2rem] overflow-hidden mb-12 border border-white/10 shadow-2xl">
+                  <img 
+                    src={typeof selectedProject.gallery[0] === 'string' ? selectedProject.gallery[0] : urlFor(selectedProject.gallery[0]).width(1200).url()} 
+                    alt={selectedProject.title} 
+                    className="w-full h-auto object-cover max-h-[600px] transition-transform duration-700 group-hover:scale-105" 
+                  />
+                  <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)] pointer-events-none rounded-[2rem]" />
+                </div>
               )}
               
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 p-8 bg-[var(--color-background)]/50 rounded-3xl border border-white/5">
-                {selectedProject.client && <div><span className="block text-sm text-[var(--color-text-muted)] mb-1 uppercase tracking-wider font-mono">Client</span><span className="text-white font-medium text-lg">{selectedProject.client}</span></div>}
-                {selectedProject.duration && <div><span className="block text-sm text-[var(--color-text-muted)] mb-1 uppercase tracking-wider font-mono">Duration</span><span className="text-white font-medium text-lg">{selectedProject.duration}</span></div>}
-                {selectedProject.location && <div><span className="block text-sm text-[var(--color-text-muted)] mb-1 uppercase tracking-wider font-mono">Location</span><span className="text-white font-medium text-lg">{selectedProject.location}</span></div>}
-              </div>
+              <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 p-8 bg-background/40 rounded-3xl border border-white/5 backdrop-blur-lg">
+                {selectedProject.client && <div><span className="block text-sm text-muted-foreground mb-1 uppercase tracking-wider font-mono">Client</span><span className="text-foreground font-medium text-lg">{selectedProject.client}</span></div>}
+                {selectedProject.duration && <div><span className="block text-sm text-muted-foreground mb-1 uppercase tracking-wider font-mono">Duration</span><span className="text-foreground font-medium text-lg">{selectedProject.duration}</span></div>}
+                {selectedProject.location && <div><span className="block text-sm text-muted-foreground mb-1 uppercase tracking-wider font-mono">Location</span><span className="text-foreground font-medium text-lg">{selectedProject.location}</span></div>}
+              </CardContent>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-16">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-16 px-2">
                 <div>
-                  <h3 className="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-4">The Challenge</h3>
-                  <p className="text-[var(--color-text-muted)] text-lg leading-relaxed mb-10">{selectedProject.problem}</p>
+                  <h3 className="text-2xl font-bold text-foreground mb-4">The Challenge</h3>
+                  <Separator className="bg-white/10 mb-6" />
+                  <p className="text-muted-foreground text-lg leading-relaxed mb-10 font-light">{selectedProject.problem}</p>
                   
-                  <h3 className="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-4">The Solution</h3>
-                  <p className="text-[var(--color-text-muted)] text-lg leading-relaxed">{selectedProject.solution}</p>
+                  <h3 className="text-2xl font-bold text-foreground mb-4">The Solution</h3>
+                  <Separator className="bg-white/10 mb-6" />
+                  <p className="text-muted-foreground text-lg leading-relaxed font-light">{selectedProject.solution}</p>
                 </div>
                 
                 <div>
                   {selectedProject.features && selectedProject.features.length > 0 && (
                     <>
-                      <h3 className="text-2xl font-bold text-white mb-6 border-b border-white/10 pb-4">Key Features</h3>
+                      <h3 className="text-2xl font-bold text-foreground mb-4">Key Features</h3>
+                      <Separator className="bg-white/10 mb-6" />
                       <ul className="flex flex-col gap-4">
                         {selectedProject.features.map((feature, i) => (
-                          <li key={i} className="flex gap-4 text-[var(--color-text-muted)] text-lg leading-relaxed p-4 bg-white/5 rounded-2xl border border-white/5">
-                            <span className="text-[var(--color-primary)] shrink-0">▹</span>
-                            {feature}
+                          <li key={i} className="flex gap-4 text-muted-foreground text-lg leading-relaxed p-5 bg-background/40 rounded-2xl border border-white/5 backdrop-blur-sm transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
+                            <span className="text-primary shrink-0 mt-1"><ChevronRight className="w-5 h-5" /></span>
+                            <span className="font-light">{feature}</span>
                           </li>
                         ))}
                       </ul>
@@ -297,7 +312,7 @@ export default function Projects() {
                 </div>
               </div>
               
-            </div>
+            </Card>
           </motion.div>
         )}
       </AnimatePresence>
