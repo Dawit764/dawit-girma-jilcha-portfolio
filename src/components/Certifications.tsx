@@ -125,14 +125,12 @@ export default function Certifications() {
                     {cert.link ? (
                       <Button
                         variant="link"
-                        asChild
+                        render={<a href={cert.link} target="_blank" rel="noopener noreferrer" />}
                         className="mt-8 p-0 h-auto justify-start text-sm font-bold uppercase tracking-widest z-10 relative w-fit hover:no-underline group/btn transition-colors duration-300"
                         style={{ color: colorIsHex ? cardColor : `hsl(var(--primary))` }}
                       >
-                        <a href={cert.link} target="_blank" rel="noopener noreferrer">
-                          View Credential
-                          <ExternalLink className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
-                        </a>
+                        View Credential
+                        <ExternalLink className="w-4 h-4 ml-2 transition-transform group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1" />
                       </Button>
                     ) : (
                       <div className="mt-8 h-6" /> // spacer

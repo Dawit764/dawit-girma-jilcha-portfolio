@@ -80,24 +80,20 @@ export default function Hero() {
           <div className="flex flex-wrap justify-center lg:justify-start gap-4">
             <Button 
               size="lg" 
-              asChild 
+              render={<a href="#featured-projects" />}
               className="h-12 px-7 rounded-xl bg-gradient-to-br from-primary to-[#00d2ff] text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 active:scale-[0.98] transition-all duration-300"
             >
-              <a href="#featured-projects">
-                View My Work
-                <ChevronRight className="w-5 h-5 ml-2" />
-              </a>
+              View My Work
+              <ChevronRight className="w-5 h-5 ml-2" />
             </Button>
             <Button 
               size="lg" 
               variant="outline" 
-              asChild
+              render={<a href="#contact" />}
               className="h-12 px-7 rounded-xl bg-white/5 border-white/10 text-foreground hover:bg-white/10 hover:border-white/20 active:scale-[0.98] transition-all duration-300 backdrop-blur-md"
             >
-              <a href="#contact">
-                <Mail className="w-5 h-5 mr-2" />
-                Contact Me
-              </a>
+              <Mail className="w-5 h-5 mr-2" />
+              Contact Me
             </Button>
           </div>
         </motion.div>

@@ -29,6 +29,33 @@ interface Project {
 
 const FALLBACK_PROJECTS: Project[] = [
   {
+    _id: "addis-consult-mvp",
+    id: "addis-consult-mvp",
+    title: "Corporate Consultancy Portal",
+    tagline: "Modern Business Advisory Platform",
+    badges: ["Next.js", "TypeScript", "Tailwind CSS", "Framer Motion", "i18n"],
+    problem: "A consultancy firm in Addis Ababa required a premium digital presence to attract corporate clients, showcase their expertise across various sectors, and provide interactive business tools.",
+    solution: "Developed a high-performance, multi-lingual web application using Next.js, featuring interactive market dashboards, a corporate tax estimator, and elegant animations to establish trust and authority.",
+    designProcess: "Adopted a premium corporate aesthetic focusing on a crisp blue and white color palette, subtle glassmorphism layers, modern typography, and fluid micro-animations to create a highly professional user experience.",
+    features: [
+      "Live Market Dashboard: A server-rendered widget fetching real-time global currency exchange rates, beautifully animated with Framer Motion.",
+      "Interactive Tax Estimator: A dynamic, client-side calculator that instantly estimates corporate tax obligations based on Ethiopian profit brackets.",
+      "Multi-lingual Architecture: Fully integrated routing and translations (English/Amharic) using next-intl for localized accessibility.",
+      "Optimized Performance: Leveraged Next.js Server Components and strict caching strategies to ensure lightning-fast page loads."
+    ],
+    challenges: "Navigating strict TypeScript requirements in the latest Next.js and Vercel AI SDK environments, as well as managing complex Framer Motion variant typings for animated components. Solved by explicitly typing animation variants and refactoring data-fetching architectures.",
+    lessons: "Deepened expertise in Next.js Server Components, managing strict TypeScript configurations in a modern React ecosystem, and delivering premium UI/UX without sacrificing performance.",
+    gallery: [
+      "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=600",
+      "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?auto=format&fit=crop&q=80&w=600"
+    ],
+    github: "https://github.com/Dawit764/addis-consult-mvp",
+    demo: "https://addis-consult-mvp.vercel.app/",
+    location: "Addis Ababa, Ethiopia",
+    client: "Consultancy Firm",
+    duration: "2 Weeks"
+  },
+  {
     _id: "paper-bag",
     id: "paper-bag",
     title: "Paper Bag Business Website",
@@ -251,17 +278,13 @@ export default function Projects() {
               
               <div className="flex flex-wrap gap-4 mb-12">
                 {selectedProject.demo && (
-                  <Button size="lg" asChild className="rounded-full px-8 h-14 font-bold bg-gradient-to-br from-primary to-[#00d2ff] text-primary-foreground hover:shadow-lg hover:shadow-primary/30 transition-all hover:scale-105 active:scale-[0.98]">
-                    <a href={selectedProject.demo} target="_blank" rel="noreferrer">
-                      <ExternalLink className="w-5 h-5 mr-2" /> Launch Live Demo
-                    </a>
+                  <Button size="lg" render={<a href={selectedProject.demo} target="_blank" rel="noreferrer" />} className="rounded-full px-8 h-14 font-bold bg-gradient-to-br from-primary to-[#00d2ff] text-primary-foreground hover:shadow-lg hover:shadow-primary/30 transition-all hover:scale-105 active:scale-[0.98]">
+                    <ExternalLink className="w-5 h-5 mr-2" /> Launch Live Demo
                   </Button>
                 )}
                 {selectedProject.github && (
-                  <Button size="lg" variant="outline" asChild className="rounded-full px-8 h-14 font-bold bg-white/5 border-white/10 text-foreground hover:bg-white/10 hover:border-white/20 transition-all hover:scale-105 active:scale-[0.98] backdrop-blur-md">
-                    <a href={selectedProject.github} target="_blank" rel="noreferrer">
-                      <Github className="w-5 h-5 mr-2" /> View Source Code
-                    </a>
+                  <Button size="lg" variant="outline" render={<a href={selectedProject.github} target="_blank" rel="noreferrer" />} className="rounded-full px-8 h-14 font-bold bg-white/5 border-white/10 text-foreground hover:bg-white/10 hover:border-white/20 transition-all hover:scale-105 active:scale-[0.98] backdrop-blur-md">
+                    <Github className="w-5 h-5 mr-2" /> View Source Code
                   </Button>
                 )}
               </div>
