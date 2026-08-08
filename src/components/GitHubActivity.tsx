@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { GitHubCalendar } from 'react-github-calendar';
 import { Github, Users, BookOpen, Star } from 'lucide-react';
@@ -11,72 +10,10 @@ interface GitHubStats {
   public_gists: number;
 }
 
+import { useGitHubStats } from '@/hooks/useGitHubStats';
+
 export default function GitHubActivity() {
-  const [stats, setStats] = useState<GitHubStats | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const cachedData = localStorage.getItem('github_stats');
-    const cachedTime = localStorage.getItem('github_stats_time');
-    
-    if (cachedData && cachedTime && (Date.now() - parseInt(cachedTime)) < 3600000) {
-      setStats(JSON.parse(cachedData));
-      setLoading(false);
-      return;
-    }
-
-    const fetchStats = async () => {
-      try {
-        const res = await fetch('/api/github-stats');
-        if (!res.ok) throw new Error('Serverless function not available');
-        
-        const data = await res.json();
-        
-        const newStats = {
-          followers: data.followers || 0,
-          following: data.following || 0,
-          public_repos: data.public_repos || 0,
-          public_gists: data.public_gists || 0,
-        };
-        
-        setStats(newStats);
-        localStorage.setItem('github_stats', JSON.stringify(newStats));
-        localStorage.setItem('github_stats_time', Date.now().toString());
-        setLoading(false);
-      } catch (err) {
-        console.warn("Falling back to public GitHub API", err);
-        fetch('https://api.github.com/users/Dawit764')
-          .then((res) => res.json())
-          .then((data) => {
-            if (data.message && data.message.includes("API rate limit exceeded")) {
-              console.warn("GitHub API rate limit exceeded. Showing placeholder or cached data.");
-              setLoading(false);
-              return;
-            }
-            
-            const PRIVATE_REPOS_COUNT = 1;
-
-            const newStats = {
-              followers: data.followers || 0,
-              following: data.following || 0,
-              public_repos: (data.public_repos || 0) + PRIVATE_REPOS_COUNT,
-              public_gists: data.public_gists || 0,
-            };
-            
-            setStats(newStats);
-            localStorage.setItem('github_stats', JSON.stringify(newStats));
-            localStorage.setItem('github_stats_time', Date.now().toString());
-            setLoading(false);
-          })
-          .catch((fallbackErr) => {
-            console.error("Failed to fetch GitHub stats", fallbackErr);
-            setLoading(false);
-          });
-      }
-    };
-
-    fetchStats();
-  }, []);
+  const { stats, loading } = useGitHubStats('Dawit764');
 
   const customTheme = {
     dark: ['#1a1a2e', '#0f3a40', '#176b70', '#1e9b9c', '#00f5ff'],
