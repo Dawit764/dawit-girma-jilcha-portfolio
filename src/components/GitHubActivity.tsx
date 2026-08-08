@@ -10,7 +10,7 @@ interface GitHubStats {
   public_gists: number;
 }
 
-import { useGitHubStats } from '@/hooks/useGitHubStats';
+import { useGitHubStats } from '../hooks/useGitHubStats';
 
 export default function GitHubActivity() {
   const { stats, loading } = useGitHubStats('Dawit764');
