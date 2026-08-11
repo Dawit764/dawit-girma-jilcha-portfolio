@@ -10,7 +10,7 @@ function Counter({ target, suffix = "" }: { target: number, suffix?: string }) {
     if (!isInView) return;
     
     let start = 0;
-    const duration = 2000;
+    const duration = 2500;
     const increment = target / (duration / 16);
     
     const timer = setInterval(() => {
@@ -27,7 +27,7 @@ function Counter({ target, suffix = "" }: { target: number, suffix?: string }) {
   }, [isInView, target]);
 
   return (
-    <span ref={ref} className="text-4xl md:text-5xl font-display font-bold text-foreground mb-2 drop-shadow-sm">
+    <span ref={ref} className="text-5xl md:text-7xl font-display text-foreground/90 mb-4 block">
       {count}{suffix}
     </span>
   );
@@ -35,52 +35,52 @@ function Counter({ target, suffix = "" }: { target: number, suffix?: string }) {
 
 export default function Stats() {
   return (
-    <section className="relative py-16 bg-card/30 backdrop-blur-md border-y border-white/5 z-10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary/5 to-transparent opacity-50" />
-      <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8 text-center relative z-10">
+    <section className="relative py-24 z-10 my-20">
+      <div className="absolute inset-0 bg-primary/5 backdrop-blur-3xl border-y border-white/5" />
+      <div className="max-w-[1000px] mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-12 text-center relative z-10">
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
+          transition={{ duration: 1, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center group"
         >
           <Counter target={2} suffix="+" />
-          <span className="text-muted-foreground font-medium text-sm md:text-base group-hover:text-primary transition-colors">Years of Coding</span>
+          <span className="text-muted-foreground/70 font-light text-sm md:text-base tracking-wide uppercase">Years Coding</span>
         </motion.div>
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.2 }}
+          transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center group"
         >
           <Counter target={10} suffix="+" />
-          <span className="text-muted-foreground font-medium text-sm md:text-base group-hover:text-primary transition-colors">Projects Built</span>
+          <span className="text-muted-foreground/70 font-light text-sm md:text-base tracking-wide uppercase">Projects Built</span>
         </motion.div>
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          transition={{ duration: 1, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center group"
         >
           <Counter target={3} />
-          <span className="text-muted-foreground font-medium text-sm md:text-base group-hover:text-primary transition-colors">Languages Spoken</span>
+          <span className="text-muted-foreground/70 font-light text-sm md:text-base tracking-wide uppercase">Languages</span>
         </motion.div>
         
         <motion.div 
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.4 }}
+          transition={{ duration: 1, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col items-center group"
         >
           <Counter target={2030} />
-          <span className="text-muted-foreground font-medium text-sm md:text-base group-hover:text-primary transition-colors">AAU Graduation</span>
+          <span className="text-muted-foreground/70 font-light text-sm md:text-base tracking-wide uppercase">Graduation</span>
         </motion.div>
         
       </div>

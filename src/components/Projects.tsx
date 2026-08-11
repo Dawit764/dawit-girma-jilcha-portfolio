@@ -6,6 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Magnetic from './ui/Magnetic';
+
+gsap.registerPlugin(ScrollTrigger);
 
 interface Project {
   _id: string;
@@ -89,8 +94,8 @@ export default function Projects() {
   const [loading, setLoading] = useState(true);
   
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
-  const [activeIndex, setActiveIndex] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     sanityClient
@@ -111,34 +116,34 @@ export default function Projects() {
   }, []);
 
   useEffect(() => {
-    const container = scrollRef.current;
-    if (!container || selectedProject || projectsList.length === 0) return;
+    if (!loading && !selectedProject && scrollRef.current && containerRef.current) {
+      const container = containerRef.current;
+      const scrollElement = scrollRef.current;
 
-    const handleScroll = () => {
-      const center = container.scrollLeft + container.clientWidth / 2;
-      let closestIndex = 0;
-      let minDistance = Infinity;
+      const getScrollAmount = () => {
+        let scrollWidth = scrollElement.scrollWidth;
+        return -(scrollWidth - window.innerWidth);
+      };
 
-      Array.from(container.children).forEach((child, index) => {
-        const childEl = child as HTMLElement;
-        const childCenter = childEl.offsetLeft + childEl.clientWidth / 2;
-        const distance = Math.abs(childCenter - center);
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestIndex = index;
+      const tween = gsap.to(scrollElement, {
+        x: getScrollAmount,
+        ease: "none",
+        scrollTrigger: {
+          trigger: container,
+          start: "top top",
+          end: () => `+=${getScrollAmount() * -1}`,
+          pin: true,
+          scrub: 1,
+          invalidateOnRefresh: true
         }
       });
 
-      if (closestIndex !== activeIndex) {
-        setActiveIndex(closestIndex);
-      }
-    };
-
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    setTimeout(handleScroll, 100);
-    
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, [projectsList.length, activeIndex, selectedProject]);
+      return () => {
+        tween.kill();
+        ScrollTrigger.getAll().forEach(t => t.kill());
+      };
+    }
+  }, [loading, selectedProject, projectsList.length]);
 
   if (loading) {
     return (
@@ -158,188 +163,152 @@ export default function Projects() {
   }
 
   return (
-    <section id="featured-projects" className="relative py-[100px] z-10 min-h-screen flex flex-col justify-center">
-      
-      <AnimatePresence mode="wait">
-        {!selectedProject ? (
+    <>
+      <section ref={containerRef} id="featured-projects" className="relative h-screen z-10 overflow-hidden flex items-center bg-transparent">
+        <div className="absolute top-1/4 left-[10vw] z-20 pointer-events-none">
+          <h2 className="text-[clamp(3rem,6vw,5rem)] font-display text-foreground drop-shadow-2xl opacity-80 mix-blend-overlay">
+            The Trail
+          </h2>
+          <p className="text-muted-foreground text-lg max-w-sm italic">
+            Scroll to walk through recent works
+          </p>
+        </div>
+        
+        <div ref={scrollRef} className="flex gap-[15vw] pl-[40vw] pr-[20vw] items-center h-full w-max">
+          {projectsList.map((project) => {
+            const coverImage = project.gallery && project.gallery.length > 0 
+              ? (typeof project.gallery[0] === 'string' ? project.gallery[0] : urlFor(project.gallery[0]).width(1200).url()) 
+              : '';
+
+            return (
+              <div 
+                key={project._id}
+                className="relative group w-[70vw] max-w-[800px] aspect-[4/3] rounded-[3rem] overflow-hidden cursor-pointer bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl transition-transform duration-700 hover:scale-[1.02]"
+                onClick={() => setSelectedProject(project)}
+              >
+                {coverImage && (
+                  <img 
+                    src={coverImage} 
+                    alt={project.title} 
+                    className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-60 transition-all duration-1000 group-hover:mix-blend-normal group-hover:opacity-90 group-hover:scale-105"
+                    loading="lazy" 
+                    referrerPolicy="no-referrer" 
+                  />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                
+                <div className="absolute inset-x-0 bottom-0 p-10 flex flex-col items-start transform transition-transform duration-500 pointer-events-none">
+                  <div className="flex flex-wrap gap-2 mb-4">
+                    {(project.badges || []).slice(0, 3).map(badge => (
+                      <Badge key={badge} variant="secondary" className="px-4 py-1.5 bg-white/10 text-white font-sans rounded-full border border-white/20 backdrop-blur-md font-light text-xs tracking-wider">
+                        {badge}
+                      </Badge>
+                    ))}
+                  </div>
+                  
+                  <h3 className="text-4xl md:text-5xl font-display text-white mb-3">{project.title}</h3>
+                  <p className="text-white/70 leading-relaxed max-w-lg font-light text-lg">
+                    {project.tagline}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <AnimatePresence>
+        {selectedProject && (
           <motion.div
-            key="carousel"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.4 }}
-            className="w-full"
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-3xl overflow-y-auto"
+            data-lenis-prevent="true"
           >
-            <div className="max-w-[1200px] mx-auto px-6 mb-12 text-center">
-              <div className="font-mono text-[0.8rem] text-primary uppercase tracking-[0.2em] mb-3">
-                03 // Creations
-              </div>
-              
-              <h2 className="text-4xl md:text-[2.5rem] font-bold text-foreground">
-                Selected <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00d2ff]">Projects</span>
-              </h2>
-            </div>
-            
-            {/* Horizontal Cover Flow Container */}
-            <div 
-              ref={scrollRef}
-              className="flex gap-8 overflow-x-auto snap-x snap-mandatory px-[10vw] md:px-[25vw] pb-12 pt-4 hide-scrollbar"
-              style={{ scrollBehavior: 'smooth' }}
-            >
-              {projectsList.map((project, idx) => {
-                const isActive = idx === activeIndex;
-                const coverImage = project.gallery && project.gallery.length > 0 
-                  ? (typeof project.gallery[0] === 'string' ? project.gallery[0] : urlFor(project.gallery[0]).width(800).url()) 
-                  : '';
-
-                return (
-                  <motion.div 
-                    key={project._id}
-                    className={`relative flex-shrink-0 w-[85vw] sm:w-[80vw] md:w-[50vw] max-w-[700px] h-[420px] md:h-[500px] snap-center rounded-[2.5rem] overflow-hidden cursor-pointer transition-all duration-700 ease-out border border-white/5 ${isActive ? 'scale-100 opacity-100 shadow-[0_30px_60px_-15px_rgba(var(--primary),0.2)] z-10' : 'scale-[0.85] opacity-30 hover:opacity-50 z-0'}`}
-                    onClick={() => setSelectedProject(project)}
+            <section className="relative min-h-screen py-24 z-20">
+              <motion.div
+                initial={{ opacity: 0, y: 50 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 50 }}
+                transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+                className="max-w-[1200px] mx-auto px-6 w-full"
+              >
+                <Magnetic>
+                  <Button 
+                    variant="ghost" 
+                    onClick={() => setSelectedProject(null)}
+                    className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-12 bg-white/5 px-6 py-6 rounded-full border border-white/10 cursor-pointer"
                   >
-                    {coverImage && (
-                      <img 
-                        src={coverImage} 
-                        alt={project.title} 
-                        className={`absolute inset-0 w-full h-full object-cover transition-transform duration-1000 ${isActive ? 'scale-105' : 'scale-100'}`}
-                        loading="lazy" 
-                        referrerPolicy="no-referrer" 
-                      />
-                    )}
-                    <div className="absolute inset-0 bg-gradient-to-t from-background via-background/60 to-transparent" />
+                    <ArrowLeft className="w-5 h-5" />
+                    Return to Trail
+                  </Button>
+                </Magnetic>
+                
+                <h1 className="text-5xl md:text-7xl font-display text-foreground mb-6">{selectedProject.title}</h1>
+                <p className="text-2xl text-primary mb-12 font-light italic">{selectedProject.tagline}</p>
+                
+                {selectedProject.gallery && selectedProject.gallery.length > 0 && (
+                  <div className="relative rounded-[3rem] overflow-hidden mb-16 border border-white/10 shadow-2xl">
+                    <img 
+                      src={typeof selectedProject.gallery[0] === 'string' ? selectedProject.gallery[0] : urlFor(selectedProject.gallery[0]).width(1600).url()} 
+                      alt={selectedProject.title} 
+                      className="w-full h-[60vh] object-cover mix-blend-luminosity hover:mix-blend-normal transition-all duration-1000" 
+                    />
+                  </div>
+                )}
+                
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                  <div className="lg:col-span-2 space-y-12">
+                    <div>
+                      <h3 className="text-3xl font-display text-foreground mb-6">The Challenge</h3>
+                      <p className="text-muted-foreground text-lg leading-relaxed font-light">{selectedProject.problem}</p>
+                    </div>
                     
-                    <div className={`absolute inset-x-0 bottom-0 p-6 md:p-12 flex flex-col items-center text-center transition-all duration-500 delay-100 ${isActive ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'}`}>
-                      <div className="flex flex-wrap justify-center gap-2 mb-4">
-                        {(project.badges || []).slice(0, 3).map(badge => (
-                          <Badge key={badge} variant="secondary" className="px-3 py-1 bg-primary/20 hover:bg-primary/30 backdrop-blur-md text-primary font-mono border border-primary/30 shadow-[0_0_10px_rgba(0,0,0,0.1)]">
+                    <div>
+                      <h3 className="text-3xl font-display text-foreground mb-6">The Solution</h3>
+                      <p className="text-muted-foreground text-lg leading-relaxed font-light">{selectedProject.solution}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-8 bg-white/5 p-8 rounded-[2rem] border border-white/10">
+                    <div className="flex flex-wrap gap-4">
+                      {selectedProject.demo && (
+                        <Magnetic>
+                          <Button size="lg" render={<a href={selectedProject.demo} target="_blank" rel="noreferrer" />} className="w-full rounded-full h-14 bg-primary/20 text-primary hover:bg-primary/30">
+                            <ExternalLink className="w-5 h-5 mr-2" /> Live Demo
+                          </Button>
+                        </Magnetic>
+                      )}
+                      {selectedProject.github && (
+                        <Magnetic>
+                          <Button size="lg" variant="outline" render={<a href={selectedProject.github} target="_blank" rel="noreferrer" />} className="w-full rounded-full h-14 bg-white/5 border-white/10">
+                            <Github className="w-5 h-5 mr-2" /> Source Code
+                          </Button>
+                        </Magnetic>
+                      )}
+                    </div>
+                    
+                    <Separator className="bg-white/10" />
+                    
+                    <div>
+                      <span className="block text-sm text-muted-foreground uppercase tracking-widest mb-2">Technologies</span>
+                      <div className="flex flex-wrap gap-2">
+                        {(selectedProject.badges || []).map(badge => (
+                          <span key={badge} className="px-3 py-1 bg-white/5 text-foreground/80 text-sm rounded-full border border-white/10">
                             {badge}
-                          </Badge>
+                          </span>
                         ))}
                       </div>
-                      
-                      <h3 className="text-3xl md:text-4xl font-bold text-foreground mb-4 drop-shadow-lg">{project.title}</h3>
-                      <p className="text-muted-foreground leading-relaxed mb-8 line-clamp-2 max-w-lg font-light">
-                        {project.tagline}
-                      </p>
-                      
-                      <Button 
-                        className="rounded-full px-8 py-6 bg-gradient-to-r from-primary to-[#00d2ff] text-primary-foreground font-bold shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-105 hover:shadow-primary/40 active:scale-[0.98]"
-                      >
-                        Explore Project
-                        <ChevronRight className="w-5 h-5 ml-2" />
-                      </Button>
                     </div>
-                  </motion.div>
-                );
-              })}
-            </div>
-            
-            {/* Scroll indicators */}
-            <div className="flex justify-center gap-3 mt-4">
-              {projectsList.map((_, idx) => (
-                <div 
-                  key={idx} 
-                  className={`h-1.5 rounded-full transition-all duration-500 ease-out ${idx === activeIndex ? 'w-8 bg-primary shadow-[0_0_10px_var(--primary)]' : 'w-2 bg-white/20'}`}
-                />
-              ))}
-            </div>
-
-          </motion.div>
-        ) : (
-          <motion.div
-            key="detail"
-            initial={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-            animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-            exit={{ opacity: 0, scale: 0.95, filter: 'blur(10px)' }}
-            transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-[1200px] mx-auto px-6 w-full"
-          >
-            <Card className="bg-card/80 backdrop-blur-2xl border-white/10 rounded-[3rem] p-6 md:p-12 shadow-[0_30px_80px_-20px_rgba(0,0,0,0.5)] relative overflow-hidden">
-              <Button 
-                variant="ghost" 
-                onClick={() => setSelectedProject(null)}
-                className="inline-flex items-center gap-2 text-primary font-mono text-sm hover:text-foreground transition-colors mb-8 bg-white/5 px-5 py-2.5 rounded-full border border-white/10 active:scale-[0.95]"
-              >
-                <ArrowLeft className="w-4 h-4 mr-1" />
-                Back to Showcase
-              </Button>
-              
-              <div className="flex flex-wrap gap-2 mb-6">
-                {(selectedProject.badges || []).map(badge => (
-                  <Badge key={badge} variant="outline" className="px-3 py-1 bg-primary/5 text-primary text-xs font-mono rounded-full border-primary/20 backdrop-blur-md">
-                    {badge}
-                  </Badge>
-                ))}
-              </div>
-              
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold text-foreground mb-4 tracking-tight">{selectedProject.title}</h1>
-              <p className="text-xl md:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00d2ff] mb-8 font-display">{selectedProject.tagline}</p>
-              
-              <div className="flex flex-wrap gap-4 mb-12">
-                {selectedProject.demo && (
-                  <Button size="lg" render={<a href={selectedProject.demo} target="_blank" rel="noreferrer" />} className="rounded-full px-8 h-14 font-bold bg-gradient-to-br from-primary to-[#00d2ff] text-primary-foreground hover:shadow-lg hover:shadow-primary/30 transition-all hover:scale-105 active:scale-[0.98]">
-                    <ExternalLink className="w-5 h-5 mr-2" /> Launch Live Demo
-                  </Button>
-                )}
-                {selectedProject.github && (
-                  <Button size="lg" variant="outline" render={<a href={selectedProject.github} target="_blank" rel="noreferrer" />} className="rounded-full px-8 h-14 font-bold bg-white/5 border-white/10 text-foreground hover:bg-white/10 hover:border-white/20 transition-all hover:scale-105 active:scale-[0.98] backdrop-blur-md">
-                    <Github className="w-5 h-5 mr-2" /> View Source Code
-                  </Button>
-                )}
-              </div>
-              
-              {selectedProject.gallery && selectedProject.gallery.length > 0 && (
-                <div className="relative group rounded-[2rem] overflow-hidden mb-12 border border-white/10 shadow-2xl">
-                  <img 
-                    src={typeof selectedProject.gallery[0] === 'string' ? selectedProject.gallery[0] : urlFor(selectedProject.gallery[0]).width(1200).url()} 
-                    alt={selectedProject.title} 
-                    className="w-full h-auto object-cover max-h-[600px] transition-transform duration-700 group-hover:scale-105" 
-                  />
-                  <div className="absolute inset-0 shadow-[inset_0_0_40px_rgba(0,0,0,0.5)] pointer-events-none rounded-[2rem]" />
+                  </div>
                 </div>
-              )}
-              
-              <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 p-8 bg-background/40 rounded-3xl border border-white/5 backdrop-blur-lg">
-                {selectedProject.client && <div><span className="block text-sm text-muted-foreground mb-1 uppercase tracking-wider font-mono">Client</span><span className="text-foreground font-medium text-lg">{selectedProject.client}</span></div>}
-                {selectedProject.duration && <div><span className="block text-sm text-muted-foreground mb-1 uppercase tracking-wider font-mono">Duration</span><span className="text-foreground font-medium text-lg">{selectedProject.duration}</span></div>}
-                {selectedProject.location && <div><span className="block text-sm text-muted-foreground mb-1 uppercase tracking-wider font-mono">Location</span><span className="text-foreground font-medium text-lg">{selectedProject.location}</span></div>}
-              </CardContent>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-16 px-2">
-                <div>
-                  <h3 className="text-2xl font-bold text-foreground mb-4">The Challenge</h3>
-                  <Separator className="bg-white/10 mb-6" />
-                  <p className="text-muted-foreground text-lg leading-relaxed mb-10 font-light">{selectedProject.problem}</p>
-                  
-                  <h3 className="text-2xl font-bold text-foreground mb-4">The Solution</h3>
-                  <Separator className="bg-white/10 mb-6" />
-                  <p className="text-muted-foreground text-lg leading-relaxed font-light">{selectedProject.solution}</p>
-                </div>
-                
-                <div>
-                  {selectedProject.features && selectedProject.features.length > 0 && (
-                    <>
-                      <h3 className="text-2xl font-bold text-foreground mb-4">Key Features</h3>
-                      <Separator className="bg-white/10 mb-6" />
-                      <ul className="flex flex-col gap-4">
-                        {selectedProject.features.map((feature, i) => (
-                          <li key={i} className="flex gap-4 text-muted-foreground text-lg leading-relaxed p-5 bg-background/40 rounded-2xl border border-white/5 backdrop-blur-sm transition-transform hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20">
-                            <span className="text-primary shrink-0 mt-1"><ChevronRight className="w-5 h-5" /></span>
-                            <span className="font-light">{feature}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </>
-                  )}
-                </div>
-              </div>
-              
-            </Card>
+              </motion.div>
+            </section>
           </motion.div>
         )}
       </AnimatePresence>
-      
-    </section>
+    </>
   );
 }

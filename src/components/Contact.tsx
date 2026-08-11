@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Linkedin, Github, Phone, Send } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import Magnetic from './ui/Magnetic';
 
 export default function Contact() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
@@ -15,7 +14,6 @@ export default function Contact() {
     const formData = new FormData(e.currentTarget);
     const data = Object.fromEntries(formData);
     
-    // Add Web3Forms access key
     data.access_key = "662245c4-f272-4ae8-b71c-8073505a1c16";
     data.from_name = data.name;
     data.replyto = data.email;
@@ -68,139 +66,147 @@ export default function Contact() {
     },
     {
       icon: <Phone className="w-5 h-5" />,
-      label: "Cellular Call",
+      label: "Cellular",
       val: "+251936125929",
       href: "tel:+251936125929"
     }
   ];
 
   return (
-    <section id="contact" className="relative py-[100px] max-w-[1200px] mx-auto px-6 z-10">
-      <div className="font-mono text-[0.8rem] text-primary uppercase tracking-[0.2em] mb-3">
-        07 // Connections
-      </div>
+    <section id="contact" className="relative py-32 max-w-[1200px] mx-auto px-6 z-10">
       
-      <h2 className="text-4xl md:text-[2.5rem] font-bold text-foreground mb-16">
-        Let's Build <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00d2ff]">Something</span>
-      </h2>
+      <motion.div
+        initial={{ opacity: 0, y: 30 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+        className="text-center mb-24"
+      >
+        <div className="inline-block px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-primary/80 text-xs tracking-widest uppercase mb-6">
+          Connections
+        </div>
+        <h2 className="text-4xl md:text-5xl font-display text-foreground">
+          Let's Form A Partnership
+        </h2>
+      </motion.div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-[0.9fr_1.1fr] gap-16 lg:gap-24">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
         
         {/* Info Panel */}
         <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col h-full"
         >
-          <h3 className="text-2xl font-bold text-foreground mb-6">Get in Touch</h3>
-          <p className="text-muted-foreground text-[1.05rem] leading-relaxed mb-12 max-w-[480px] font-light">
-            I am always eager to hear about internship opportunities, commercial collaborations, open-source projects, and technical innovations. Let's form a partnership!
+          <p className="text-muted-foreground/80 text-lg leading-[1.8] mb-12 max-w-[480px] font-light">
+            I am always eager to hear about internship opportunities, commercial collaborations, open-source projects, and technical innovations. Let's build something natural.
           </p>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             {contactLinks.map((link, idx) => (
-              <a 
-                key={idx}
-                href={link.href}
-                target={link.href.startsWith('http') ? "_blank" : undefined}
-                rel={link.href.startsWith('http') ? "noopener noreferrer" : undefined}
-                className="group flex flex-col gap-4 p-6 rounded-3xl bg-card/40 backdrop-blur-xl border border-white/5 hover:bg-card/80 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_10px_30px_-10px_rgba(var(--primary),0.15)]"
-              >
-                <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground transition-colors duration-300 shadow-[inset_0_0_10px_rgba(var(--primary),0.1)]">
-                  {link.icon}
-                </div>
-                <div>
-                  <span className="block text-[0.75rem] text-muted-foreground font-mono uppercase tracking-widest mb-1.5">{link.label}</span>
-                  <span className="block text-[0.95rem] text-foreground font-medium truncate max-w-full">{link.val}</span>
-                </div>
-              </a>
+              <Magnetic key={idx}>
+                <a 
+                  href={link.href}
+                  target={link.href.startsWith('http') || link.href.startsWith('mailto') || link.href.startsWith('tel') ? "_blank" : undefined}
+                  rel={link.href.startsWith('http') ? "noopener noreferrer" : undefined}
+                  className="group flex flex-col items-center justify-center text-center p-8 rounded-full bg-white/5 backdrop-blur-md border border-white/10 hover:bg-white/10 transition-all duration-700 hover:scale-105"
+                >
+                  <div className="w-12 h-12 rounded-full bg-black/20 text-primary/70 flex items-center justify-center mb-4 group-hover:text-primary transition-colors duration-500 border border-white/5">
+                    {link.icon}
+                  </div>
+                  <div>
+                    <span className="block text-[0.65rem] text-muted-foreground/60 font-mono uppercase tracking-widest mb-2">{link.label}</span>
+                    <span className="block text-sm text-foreground/80 font-light truncate max-w-[150px]">{link.val}</span>
+                  </div>
+                </a>
+              </Magnetic>
             ))}
           </div>
         </motion.div>
         
         {/* Form Panel */}
         <motion.div 
-          initial={{ opacity: 0, x: 20 }}
-          whileInView={{ opacity: 1, x: 0 }}
-          viewport={{ once: true, margin: "-50px" }}
-          transition={{ duration: 0.8, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
         >
-          <Card className="bg-card/60 backdrop-blur-2xl border-white/10 p-2 md:p-4 rounded-[2.5rem] shadow-[0_30px_60px_-15px_rgba(0,0,0,0.5)]">
-            <CardContent className="p-6 md:p-8">
-              <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  <div className="flex flex-col gap-2.5">
-                    <label htmlFor="name" className="text-sm font-medium text-foreground/80 pl-1">Name *</label>
-                    <input 
-                      type="text" 
-                      id="name" 
-                      name="name" 
-                      required 
-                      placeholder="Dawit Girma"
-                      className="bg-background/50 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-4 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all shadow-inner"
-                    />
-                  </div>
-                  <div className="flex flex-col gap-2.5">
-                    <label htmlFor="email" className="text-sm font-medium text-foreground/80 pl-1">Email *</label>
-                    <input 
-                      type="email" 
-                      id="email" 
-                      name="email" 
-                      required 
-                      placeholder="recruiter@company.com"
-                      className="bg-background/50 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-4 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all shadow-inner"
-                    />
-                  </div>
-                </div>
-                
-                <div className="flex flex-col gap-2.5">
-                  <label htmlFor="subject" className="text-sm font-medium text-foreground/80 pl-1">Subject</label>
+          <div className="bg-white/5 backdrop-blur-xl border border-white/10 p-10 md:p-14 rounded-[3.5rem]">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-8">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div className="flex flex-col gap-3">
+                  <label htmlFor="name" className="text-xs font-mono uppercase tracking-widest text-muted-foreground/60 pl-4">Name</label>
                   <input 
                     type="text" 
-                    id="subject" 
-                    name="subject" 
-                    placeholder="Summer Internship Opportunity"
-                    className="bg-background/50 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-4 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all shadow-inner"
+                    id="name" 
+                    name="name" 
+                    required 
+                    placeholder="Dawit Girma"
+                    className="bg-black/20 border border-white/10 rounded-full px-6 py-4 text-foreground/90 placeholder:text-muted-foreground/30 font-light focus:outline-none focus:border-primary/50 focus:bg-white/5 transition-all w-full"
                   />
                 </div>
-                
-                <div className="flex flex-col gap-2.5">
-                  <label htmlFor="message" className="text-sm font-medium text-foreground/80 pl-1">Message *</label>
-                  <textarea 
-                    id="message" 
-                    name="message" 
-                    rows={5} 
-                    required
-                    placeholder="Hi Dawit, we would love to schedule a technical chat..."
-                    className="bg-background/50 backdrop-blur-sm border border-white/10 rounded-2xl px-5 py-4 text-foreground placeholder:text-muted-foreground/50 focus:outline-none focus:border-primary/50 focus:ring-1 focus:ring-primary/50 transition-all resize-y min-h-[140px] shadow-inner"
+                <div className="flex flex-col gap-3">
+                  <label htmlFor="email" className="text-xs font-mono uppercase tracking-widest text-muted-foreground/60 pl-4">Email</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    required 
+                    placeholder="hello@earth.com"
+                    className="bg-black/20 border border-white/10 rounded-full px-6 py-4 text-foreground/90 placeholder:text-muted-foreground/30 font-light focus:outline-none focus:border-primary/50 focus:bg-white/5 transition-all w-full"
                   />
                 </div>
-                
-                <Button 
+              </div>
+              
+              <div className="flex flex-col gap-3">
+                <label htmlFor="subject" className="text-xs font-mono uppercase tracking-widest text-muted-foreground/60 pl-4">Subject</label>
+                <input 
+                  type="text" 
+                  id="subject" 
+                  name="subject" 
+                  placeholder="Collaboration Opportunity"
+                  className="bg-black/20 border border-white/10 rounded-full px-6 py-4 text-foreground/90 placeholder:text-muted-foreground/30 font-light focus:outline-none focus:border-primary/50 focus:bg-white/5 transition-all w-full"
+                />
+              </div>
+              
+              <div className="flex flex-col gap-3">
+                <label htmlFor="message" className="text-xs font-mono uppercase tracking-widest text-muted-foreground/60 pl-4">Message</label>
+                <textarea 
+                  id="message" 
+                  name="message" 
+                  rows={4} 
+                  required
+                  placeholder="How can we work together?"
+                  className="bg-black/20 border border-white/10 rounded-[2rem] px-6 py-5 text-foreground/90 placeholder:text-muted-foreground/30 font-light focus:outline-none focus:border-primary/50 focus:bg-white/5 transition-all resize-none w-full"
+                />
+              </div>
+              
+              <Magnetic>
+                <button 
                   type="submit" 
-                  size="lg"
                   disabled={formStatus === 'submitting'}
-                  className="mt-4 rounded-full h-14 bg-gradient-to-r from-primary to-[#00d2ff] text-primary-foreground font-bold text-[1.05rem] shadow-lg shadow-primary/20 transition-all duration-300 hover:scale-[1.02] hover:shadow-primary/40 active:scale-[0.98]"
+                  className="w-full mt-2 rounded-full h-16 bg-white/10 border border-white/20 text-foreground/90 font-light text-lg transition-all duration-500 hover:bg-white/20 flex items-center justify-center disabled:opacity-50"
                 >
                   {formStatus === 'submitting' ? (
-                    <>Sending...</>
+                    <span className="animate-pulse">Sending...</span>
                   ) : formStatus === 'success' ? (
-                    <>Message Sent!</>
+                    <span className="text-primary">Message Sent</span>
                   ) : (
                     <>
-                      <Send className="w-5 h-5 mr-2" />
-                      Send Message
+                      Transmit
+                      <Send className="w-5 h-5 ml-3 opacity-60" />
                     </>
                   )}
-                </Button>
-                
-                {formStatus === 'error' && (
-                  <p className="text-red-400 text-sm mt-2 text-center">{errorMessage}</p>
-                )}
-              </form>
-            </CardContent>
-          </Card>
+                </button>
+              </Magnetic>
+              
+              {formStatus === 'error' && (
+                <p className="text-red-400/80 text-sm mt-2 text-center font-light">{errorMessage}</p>
+              )}
+            </form>
+          </div>
         </motion.div>
       </div>
     </section>

@@ -1,83 +1,37 @@
-import { motion, useScroll, useTransform, useMotionValue, useSpring } from 'motion/react';
+import { motion, useScroll, useTransform } from 'motion/react';
 import { useRef } from 'react';
 import { GraduationCap, Baby, BookOpen, Code2, Rocket, MapPin, Calendar, Briefcase } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
 
-const TiltCard = ({ item, isEven }: { item: any, isEven: boolean }) => {
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-
-  const mouseXSpring = useSpring(x);
-  const mouseYSpring = useSpring(y);
-
-  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], ["7.5deg", "-7.5deg"]);
-  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-7.5deg", "7.5deg"]);
-
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const rect = e.currentTarget.getBoundingClientRect();
-    const width = rect.width;
-    const height = rect.height;
-    const mouseX = e.clientX - rect.left;
-    const mouseY = e.clientY - rect.top;
-    const xPct = mouseX / width - 0.5;
-    const yPct = mouseY / height - 0.5;
-    x.set(xPct);
-    y.set(yPct);
-  };
-
-  const handleMouseLeave = () => {
-    x.set(0);
-    y.set(0);
-  };
-
+const JourneyCard = ({ item, isEven }: { item: any, isEven: boolean }) => {
   return (
     <motion.div 
-      initial={{ opacity: 0, x: isEven ? 50 : -50 }}
-      whileInView={{ opacity: 1, x: 0 }}
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
-      transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-      className="w-full md:w-[45%] pl-12 md:pl-0"
-      style={{ perspective: "1000px" }}
+      transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+      className={`w-full md:w-[45%] pl-12 md:pl-0 ${isEven ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}
     >
-      <motion.div
-        onMouseMove={handleMouseMove}
-        onMouseLeave={handleMouseLeave}
-        style={{
-          rotateY,
-          rotateX,
-          transformStyle: "preserve-3d",
-        }}
-        className="w-full h-full"
+      <div 
+        className={`relative bg-white/5 backdrop-blur-md border border-white/10 p-8 md:p-10 transition-all duration-700 hover:bg-white/10 text-left w-full cursor-default ${isEven ? 'md:text-left' : 'md:text-left'} rounded-[3rem]`}
       >
-        <Card 
-          className={`relative bg-card/60 backdrop-blur-xl border-white/5 p-2 rounded-[2rem] transition-all duration-500 hover:border-primary/30 hover:shadow-[0_20px_50px_-15px_rgba(var(--primary),0.2)] text-left w-full cursor-default ${isEven ? 'md:text-left' : 'md:text-right'}`}
-        >
-          <CardContent className="p-6 md:p-8">
-            <div style={{ transform: "translateZ(30px)" }} className={`flex flex-col ${isEven ? 'md:items-start' : 'md:items-end'} mb-4`}>
-              <Badge variant="secondary" className="flex items-center gap-1.5 mb-4 bg-primary/10 text-primary border-primary/20 backdrop-blur-sm px-3 py-1 text-sm font-mono shadow-sm">
-                <Calendar className="w-3.5 h-3.5" />
-                {item.year}
-              </Badge>
-              
-              <h3 className="text-2xl font-bold text-foreground mb-3">{item.title}</h3>
-              
-              <div className="flex items-center gap-2 text-muted-foreground text-[0.95rem] mb-5 bg-background/50 px-3.5 py-1.5 rounded-xl border border-white/5 w-fit shadow-[inset_0_1px_3px_rgba(0,0,0,0.2)]">
-                {item.iconType === 'location' ? <MapPin className="w-4 h-4" /> : <Briefcase className="w-4 h-4" />}
-                <span className="italic font-light">{item.subtitle}</span>
-              </div>
-              
-              <p className="text-muted-foreground leading-relaxed font-light text-[1.05rem]">{item.desc}</p>
+        <div className={`flex flex-col mb-4`}>
+          <div className="flex items-center gap-2 mb-6">
+            <div className="flex items-center justify-center bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full border border-white/10 text-xs font-mono text-primary/90 tracking-widest">
+              <Calendar className="w-3.5 h-3.5 mr-2" />
+              {item.year}
             </div>
-          </CardContent>
+          </div>
           
-          {/* Glow behind the card on hover */}
-          <div 
-            className="absolute inset-0 -z-10 bg-gradient-to-br from-primary to-[#00d2ff] rounded-[2rem] opacity-0 blur-2xl transition-opacity duration-700 hover:opacity-10 pointer-events-none"
-            style={{ transform: "translateZ(-10px)" }}
-          />
-        </Card>
-      </motion.div>
+          <h3 className="text-3xl font-display text-foreground/90 mb-4">{item.title}</h3>
+          
+          <div className="flex items-center gap-2 text-muted-foreground/80 text-sm mb-6 bg-black/20 px-4 py-2 rounded-full border border-white/5 w-fit">
+            {item.iconType === 'location' ? <MapPin className="w-4 h-4" /> : <Briefcase className="w-4 h-4" />}
+            <span className="italic font-light">{item.subtitle}</span>
+          </div>
+          
+          <p className="text-muted-foreground/80 leading-relaxed font-light text-base">{item.desc}</p>
+        </div>
+      </div>
     </motion.div>
   );
 };
@@ -136,52 +90,54 @@ export default function Journey() {
 
   return (
     <>
-      <section id="journey" className="relative py-[100px] max-w-[1200px] mx-auto px-6 z-10 overflow-hidden">
-        <div className="font-mono text-[0.8rem] text-primary uppercase tracking-[0.2em] mb-3 text-center md:text-left">
-          04 // Narrative
-        </div>
+      <section id="journey" className="relative py-32 max-w-[1200px] mx-auto px-6 z-10 overflow-hidden">
         
-        <h2 className="text-4xl md:text-[2.5rem] font-bold text-foreground mb-20 text-center md:text-left">
-          My <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00d2ff]">Journey</span>
-        </h2>
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-24"
+        >
+          <div className="inline-block px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-primary/80 text-xs tracking-widest uppercase mb-6">
+            Narrative
+          </div>
+          <h2 className="text-4xl md:text-5xl font-display text-foreground">
+            My Journey
+          </h2>
+        </motion.div>
         
         <div ref={containerRef} className="relative py-10">
-          {/* Base Timeline Line (Dim) */}
-          <div className="absolute left-[20px] md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-[2px] bg-white/5 rounded-full" />
+          {/* Soft Organic Path */}
+          <div className="absolute left-[24px] md:left-1/2 md:-translate-x-1/2 top-0 bottom-0 w-[1px] bg-white/10" />
           
-          {/* Active Timeline Line (Bright) */}
+          {/* Active Flowing Line */}
           <motion.div 
-            className="absolute left-[20px] md:left-1/2 md:-translate-x-1/2 top-0 w-[2px] bg-gradient-to-b from-primary to-[#00d2ff] rounded-full shadow-[0_0_15px_var(--primary)] z-10"
+            className="absolute left-[24px] md:left-1/2 md:-translate-x-1/2 top-0 w-[3px] bg-primary/40 blur-[1px] rounded-full z-10"
             style={{ height: timelineHeight }}
           />
           
-          {/* Glowing Head Particle on Active Line */}
-          <motion.div 
-            className="absolute left-[16px] md:left-1/2 md:-translate-x-1/2 w-[10px] h-[20px] bg-white rounded-full blur-[3px] shadow-[0_0_20px_10px_var(--primary)] z-10"
-            style={{ top: timelineHeight, y: "-100%" }}
-          />
-          
-          <div className="flex flex-col gap-24 relative z-20">
+          <div className="flex flex-col gap-16 relative z-20">
             {journeyItems.map((item, idx) => {
               const isEven = idx % 2 === 0;
               const Icon = item.icon;
               return (
                 <div key={idx} className={`relative flex md:justify-between items-center w-full ${isEven ? 'md:flex-row-reverse' : ''}`}>
                   
-                  {/* Interactive Indicator Dot */}
+                  {/* Soft Glowing Node */}
                   <motion.div 
-                    initial={{ scale: 0.8, backgroundColor: "var(--background)", borderColor: "rgba(255,255,255,0.1)", boxShadow: "0 0 0px transparent", color: "rgba(255,255,255,0.4)" }}
-                    whileInView={{ scale: 1.1, backgroundColor: "var(--card)", borderColor: "var(--primary)", boxShadow: "0 0 30px rgba(var(--primary),0.5)", color: "var(--primary)" }}
+                    initial={{ scale: 0.8, backgroundColor: "rgba(255,255,255,0.05)", color: "rgba(255,255,255,0.3)" }}
+                    whileInView={{ scale: 1, backgroundColor: "rgba(255,255,255,0.1)", color: "var(--primary)" }}
                     viewport={{ once: false, margin: "-50% 0px -50% 0px" }}
-                    transition={{ duration: 0.5, ease: "easeOut" }}
-                    className="absolute left-[-2px] md:left-1/2 md:-translate-x-1/2 w-[46px] h-[46px] rounded-full border border-primary/50 flex items-center justify-center z-30 transition-colors bg-card backdrop-blur-md"
+                    transition={{ duration: 1, ease: "easeOut" }}
+                    className="absolute left-[0px] md:left-1/2 md:-translate-x-1/2 w-12 h-12 rounded-full border border-white/10 flex items-center justify-center z-30 backdrop-blur-md"
                   >
-                    <Icon className="w-5 h-5" />
+                    <Icon className="w-5 h-5 opacity-80" />
                   </motion.div>
                   
                   <div className="hidden md:block w-[45%]" />
                   
-                  <TiltCard item={item} isEven={isEven} />
+                  <JourneyCard item={item} isEven={isEven} />
                   
                 </div>
               );
@@ -190,56 +146,56 @@ export default function Journey() {
         </div>
       </section>
 
-      {/* Education & Credentials */}
-      <section id="education" className="relative py-[100px] bg-card/20 border-y border-white/5 z-10 backdrop-blur-md">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none" />
-        <div className="max-w-[1200px] mx-auto px-6 relative z-10">
-          <div className="font-mono text-[0.8rem] text-primary uppercase tracking-[0.2em] mb-3 text-center">
-            05 // Academic Foundations
-          </div>
-          
-          <h2 className="text-4xl md:text-[2.5rem] font-bold text-foreground mb-12 text-center tracking-tight">
-            Academic <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-[#00d2ff]">Credentials</span>
-          </h2>
-          
+      {/* Academic Roots */}
+      <section id="education" className="relative py-32 z-10">
+        <div className="max-w-[1000px] mx-auto px-6 relative z-10">
           <motion.div 
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="max-w-3xl mx-auto"
+            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            className="text-center"
           >
-            <Card className="bg-card/60 backdrop-blur-2xl border-white/10 p-2 md:p-4 rounded-[2.5rem] relative overflow-hidden group shadow-[0_20px_50px_-15px_rgba(0,0,0,0.5)]">
-              <div className="absolute top-0 right-0 w-80 h-80 bg-primary/10 rounded-full blur-[100px] group-hover:bg-primary/20 transition-colors duration-700 pointer-events-none" />
+            <div className="inline-block px-4 py-2 rounded-full border border-white/10 bg-white/5 backdrop-blur-md text-primary/80 text-xs tracking-widest uppercase mb-6">
+              Academic Foundations
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-display text-foreground mb-16">
+              Rooted In Science
+            </h2>
+            
+            <div className="bg-white/5 backdrop-blur-2xl border border-white/10 p-10 md:p-16 rounded-[4rem] relative overflow-hidden group">
               
-              <CardContent className="relative z-10 flex flex-col items-center text-center p-8 md:p-12">
-                <div className="w-20 h-20 bg-gradient-to-br from-primary to-[#00d2ff] rounded-3xl flex items-center justify-center mb-8 shadow-xl shadow-primary/20 text-primary-foreground transform group-hover:scale-105 group-hover:rotate-3 transition-transform duration-500">
+              <div className="relative z-10 flex flex-col items-center text-center">
+                <div className="w-24 h-24 bg-white/10 backdrop-blur-md rounded-full border border-white/10 flex items-center justify-center mb-10 text-primary/80 transform transition-transform duration-700 group-hover:scale-105">
                   <GraduationCap className="w-10 h-10" />
                 </div>
                 
-                <h3 className="text-3xl font-bold text-foreground mb-3 font-display">Addis Ababa University</h3>
-                <div className="text-xl text-primary font-medium mb-8 bg-primary/10 px-4 py-1.5 rounded-full border border-primary/20">BSc in Computer Science (AAIT)</div>
+                <h3 className="text-3xl font-display text-foreground/90 mb-4">Addis Ababa University</h3>
+                <div className="text-sm text-primary/80 font-mono tracking-wider mb-8 bg-black/20 px-6 py-2 rounded-full border border-white/5">
+                  BSc in Computer Science (AAIT)
+                </div>
                 
-                <p className="text-muted-foreground text-lg mb-10 max-w-2xl leading-relaxed font-light">
-                  Enrolled in the flagship computer science program, training in advanced algorithms, database structures, machine learning theory, and hardware designs at the Addis Ababa Institute of Technology.
+                <p className="text-muted-foreground/80 text-lg mb-12 max-w-2xl leading-[1.8] font-light">
+                  Cultivating a deep understanding of computational structures, advanced algorithms, and machine learning theory at Ethiopia's premier technology institute.
                 </p>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full border-t border-white/5 pt-10">
-                  <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-background/30 border border-white/5">
-                    <span className="text-xs uppercase tracking-wider text-muted-foreground font-mono">Current Status</span>
-                    <span className="text-foreground font-medium">Second Year</span>
+                <div className="flex flex-col sm:flex-row justify-center gap-4 w-full">
+                  <div className="flex flex-col gap-2 p-6 rounded-[2rem] bg-black/20 border border-white/5 w-full sm:w-1/3">
+                    <span className="text-xs uppercase tracking-widest text-muted-foreground/60 font-mono">Status</span>
+                    <span className="text-foreground/80 font-light">Second Year</span>
                   </div>
-                  <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-background/30 border border-white/5">
-                    <span className="text-xs uppercase tracking-wider text-muted-foreground font-mono">Expected Graduation</span>
-                    <span className="text-foreground font-medium">Class of 2030</span>
+                  <div className="flex flex-col gap-2 p-6 rounded-[2rem] bg-black/20 border border-white/5 w-full sm:w-1/3">
+                    <span className="text-xs uppercase tracking-widest text-muted-foreground/60 font-mono">Graduation</span>
+                    <span className="text-foreground/80 font-light">Class of 2030</span>
                   </div>
-                  <div className="flex flex-col gap-1.5 p-4 rounded-2xl bg-background/30 border border-white/5">
-                    <span className="text-xs uppercase tracking-wider text-muted-foreground font-mono">Location</span>
-                    <span className="text-foreground font-medium">Addis Ababa, ET</span>
+                  <div className="flex flex-col gap-2 p-6 rounded-[2rem] bg-black/20 border border-white/5 w-full sm:w-1/3">
+                    <span className="text-xs uppercase tracking-widest text-muted-foreground/60 font-mono">Location</span>
+                    <span className="text-foreground/80 font-light">Addis Ababa, ET</span>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </motion.div>
         </div>
       </section>

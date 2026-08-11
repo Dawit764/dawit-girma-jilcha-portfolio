@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap');
+
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
-
 @custom-variant dark (&:is(.dark *));
 
 @theme {
@@ -33,100 +33,88 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  
-  /* Legacy aliases for old components */
-  --color-surface: var(--card);
-  --color-surface-hover: var(--accent);
-  --color-text-main: var(--foreground);
-  --color-text-muted: var(--muted-foreground);
 
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --font-display: 'Space Grotesk', system-ui, sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Playfair Display', serif;
 }
 
 @layer base {
   html {
-    scroll-behavior: smooth;
-    scroll-padding-top: 80px; 
+    scroll-behavior: auto; /* Lenis handles smooth scrolling */
     @apply font-sans;
     color-scheme: dark;
+    background-color: #0f1714;
+    min-height: 100vh;
+    width: 100%;
   }
 
   body {
     @apply bg-background text-foreground antialiased;
-  }
-
-  #root {
+    background-color: #0f1714;
     overflow-x: hidden;
-    position: relative;
+    min-height: 100vh;
     width: 100%;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-display);
-  }
-
-  * {
-    @apply border-border outline-ring/50;
+    font-weight: 400;
   }
 }
 
-/* Beautiful scrollbar */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: oklch(1 0 0 / 0.2); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: oklch(1 0 0 / 0.4); }
+/* Custom Noise Overlay */
+.noise-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.03;
+  mix-blend-mode: overlay;
+}
+
+/* Hide scrollbar for clean look */
+::-webkit-scrollbar { width: 0px; }
 
 ::selection {
-  background-color: oklch(0.7 0.15 250 / 0.2);
+  background-color: oklch(0.5 0.1 120 / 0.3); /* Soft moss green selection */
   color: var(--primary);
 }
 
-@theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: 'Geist Variable', sans-serif;
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-}
-
 :root {
-  /* Ultra-Premium Apple Dark Mode */
-  --background: oklch(0.12 0 0); /* Almost true black */
-  --foreground: oklch(0.98 0 0); /* Crisp white text */
-  --card: oklch(0.15 0 0); /* Slightly lighter surface for cards */
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.15 0 0);
-  --popover-foreground: oklch(0.98 0 0);
+  /* Earth Tones - No pure blacks or whites */
+  --background: oklch(0.18 0.02 90); /* Deep forest / dark earthy brown-green */
+  --foreground: oklch(0.92 0.01 90); /* Soft sand/off-white */
   
-  /* Primary: Electric Cyan/Blue Apple accent */
-  --primary: oklch(0.75 0.15 240); 
-  --primary-foreground: oklch(0.12 0 0); 
+  --card: oklch(0.22 0.02 90 / 0.4); /* Glassmorphism base */
+  --card-foreground: oklch(0.92 0.01 90);
   
-  /* Secondary: Soft Titanium Grey */
-  --secondary: oklch(0.20 0 0);
-  --secondary-foreground: oklch(0.98 0 0);
+  --popover: oklch(0.20 0.02 90);
+  --popover-foreground: oklch(0.92 0.01 90);
   
-  /* Muted: Soft grey */
-  --muted: oklch(0.20 0 0);
-  --muted-foreground: oklch(0.65 0 0);
+  /* Primary: Soft sage green */
+  --primary: oklch(0.65 0.06 130); 
+  --primary-foreground: oklch(0.15 0.02 90); 
+  
+  /* Secondary: Muted clay */
+  --secondary: oklch(0.35 0.03 70);
+  --secondary-foreground: oklch(0.90 0.01 90);
+  
+  /* Muted: Soft earthy grey */
+  --muted: oklch(0.25 0.02 90);
+  --muted-foreground: oklch(0.70 0.02 90);
   
   /* Accent: Hover surfaces */
-  --accent: oklch(0.22 0 0);
-  --accent-foreground: oklch(0.98 0 0);
+  --accent: oklch(0.30 0.03 90 / 0.5);
+  --accent-foreground: oklch(0.92 0.01 90);
   
-  --destructive: oklch(0.6 0.2 25);
-  --destructive-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.5 0.15 25);
+  --destructive-foreground: oklch(0.92 0.01 90);
   
-  /* Borders: Soft hairlines */
-  --border: oklch(1 0 0 / 0.08);
-  --input: oklch(1 0 0 / 0.08);
+  /* Borders: Soft glass borders */
+  --border: oklch(0.92 0.01 90 / 0.1);
+  --input: oklch(0.92 0.01 90 / 0.1);
   
-  --ring: oklch(0.75 0.15 240);
-  --radius: 0.75rem;
+  --ring: oklch(0.65 0.06 130);
+  --radius: 1rem;
 }
