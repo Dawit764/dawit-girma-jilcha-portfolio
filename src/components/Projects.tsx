@@ -281,13 +281,7 @@ export default function Projects() {
                           </Button>
                         </Magnetic>
                       )}
-                      {selectedProject.github && (
-                        <Magnetic>
-                          <Button size="lg" variant="outline" render={<a href={selectedProject.github} target="_blank" rel="noreferrer" />} className="w-full rounded-full h-14 bg-white/5 border-white/10">
-                            <Github className="w-5 h-5 mr-2" /> Source Code
-                          </Button>
-                        </Magnetic>
-                      )}
+
                     </div>
                     
                     <Separator className="bg-white/10" />
