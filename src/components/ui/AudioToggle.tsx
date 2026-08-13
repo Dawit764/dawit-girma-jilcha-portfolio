@@ -15,34 +15,53 @@ export default function AudioToggle() {
     const ctx = new AudioContext();
     audioCtxRef.current = ctx;
 
-    // Create 5 seconds of noise buffer
     const bufferSize = ctx.sampleRate * 5; 
     const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
     const data = buffer.getChannelData(0);
     
-    // Generate deep brown noise (sounds like ocean/wind)
-    let lastOut = 0;
+    // Generate white noise for the water
     for (let i = 0; i < bufferSize; i++) {
-      const white = Math.random() * 2 - 1;
-      data[i] = (lastOut + (0.02 * white)) / 1.02;
-      lastOut = data[i];
-      data[i] *= 3.5; 
+      data[i] = Math.random() * 2 - 1;
     }
 
     const noiseSource = ctx.createBufferSource();
     noiseSource.buffer = buffer;
     noiseSource.loop = true;
 
-    // Filter to make it a low rumble
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 400; 
+    // 1. Deep flow (Base rumble of the stream)
+    const lowpass = ctx.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.value = 400;
+
+    // 2. Bubbling / Gurgling (Trickling water)
+    const bandpass = ctx.createBiquadFilter();
+    bandpass.type = 'bandpass';
+    bandpass.frequency.value = 1000;
+    bandpass.Q.value = 3.0; // Resonance to create distinct pitch
+
+    // Modulate the bandpass frequency to create the "gurgle"
+    const lfo = ctx.createOscillator();
+    lfo.type = 'sine';
+    lfo.frequency.value = 0.5; // Speed of the gurgle
     
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 600; // Sweep range (400Hz to 1600Hz)
+
+    lfo.connect(lfoGain);
+    lfoGain.connect(bandpass.frequency);
+    lfo.start();
+
+    // Master gain for the whole stream
     const gainNode = ctx.createGain();
     gainNode.gain.value = 0; // Start muted
 
-    noiseSource.connect(filter);
-    filter.connect(gainNode);
+    // Split noise into both filters
+    noiseSource.connect(lowpass);
+    noiseSource.connect(bandpass);
+
+    // Recombine into master gain
+    lowpass.connect(gainNode);
+    bandpass.connect(gainNode);
     gainNode.connect(ctx.destination);
 
     noiseSource.start();
