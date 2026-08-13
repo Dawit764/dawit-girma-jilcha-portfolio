@@ -238,13 +238,6 @@ export default function Contact() {
         onModalClose={() => setIsCalendlyOpen(false)}
         open={isCalendlyOpen}
         rootElement={document.getElementById("root")!}
-        pageSettings={{
-          backgroundColor: '0f1714',
-          hideEventTypeDetails: false,
-          hideLandingPageDetails: false,
-          primaryColor: 'ffffff',
-          textColor: 'ffffff'
-        }}
       />
     </>
   );
