@@ -1,9 +1,28 @@
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { ChevronRight, Mail } from 'lucide-react';
+import { ChevronRight, Mail, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import Magnetic from './ui/Magnetic';
+import { sanityClient } from '../sanity';
 
 export default function Hero() {
+  const [cvUrl, setCvUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCv = async () => {
+      try {
+        const query = '*[_type == "cv"] | order(lastUpdated desc, _createdAt desc)[0]{ "cvUrl": cvFile.asset->url }';
+        const result = await sanityClient.fetch(query);
+        if (result?.cvUrl) {
+          setCvUrl(result.cvUrl);
+        }
+      } catch (error) {
+        console.error("Failed to fetch CV URL:", error);
+      }
+    };
+    fetchCv();
+  }, []);
+
   return (
     <section id="home" className="relative min-h-screen flex flex-col justify-center pt-28 lg:pt-36 pb-12 max-w-[1200px] mx-auto px-6 z-10">
       <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-12 lg:gap-16 items-center w-full">
@@ -49,6 +68,19 @@ export default function Hero() {
                 Contact Me
               </Button>
             </Magnetic>
+            {cvUrl && (
+              <Magnetic>
+                <Button 
+                  size="lg" 
+                  variant="outline" 
+                  render={<a href={cvUrl} target="_blank" rel="noopener noreferrer" />}
+                  className="h-14 px-8 rounded-full bg-white/5 border border-white/10 text-foreground hover:bg-white/10 transition-all duration-300 backdrop-blur-md"
+                >
+                  <Download className="w-5 h-5 mr-3" />
+                  Download CV
+                </Button>
+              </Magnetic>
+            )}
           </div>
         </motion.div>
         
