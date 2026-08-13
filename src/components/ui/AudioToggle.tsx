@@ -1,42 +1,95 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Howl } from 'howler';
 import { Volume2, VolumeX } from 'lucide-react';
-import { motion } from 'motion/react';
 import Magnetic from './Magnetic';
-
-const AUDIO_URL = '/ambient.mp3';
 
 export default function AudioToggle() {
   const [isPlaying, setIsPlaying] = useState(false);
-  const soundRef = useRef<Howl | null>(null);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const sourceRef = useRef<AudioBufferSourceNode | null>(null);
 
-  useEffect(() => {
-    soundRef.current = new Howl({
-      src: [AUDIO_URL],
-      loop: true,
-      volume: 0,
-      html5: true, // Good for long streaming audio
-    });
+  const initAudio = () => {
+    if (audioCtxRef.current) return;
+    
+    const AudioContext = window.AudioContext || (window as any).webkitAudioContext;
+    const ctx = new AudioContext();
+    audioCtxRef.current = ctx;
 
-    return () => {
-      soundRef.current?.unload();
-    };
-  }, []);
+    // Create 5 seconds of noise buffer
+    const bufferSize = ctx.sampleRate * 5; 
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    
+    // Generate deep brown noise (sounds like ocean/wind)
+    let lastOut = 0;
+    for (let i = 0; i < bufferSize; i++) {
+      const white = Math.random() * 2 - 1;
+      data[i] = (lastOut + (0.02 * white)) / 1.02;
+      lastOut = data[i];
+      data[i] *= 3.5; 
+    }
+
+    const noiseSource = ctx.createBufferSource();
+    noiseSource.buffer = buffer;
+    noiseSource.loop = true;
+
+    // Filter to make it a low rumble
+    const filter = ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 400; 
+    
+    const gainNode = ctx.createGain();
+    gainNode.gain.value = 0; // Start muted
+
+    noiseSource.connect(filter);
+    filter.connect(gainNode);
+    gainNode.connect(ctx.destination);
+
+    noiseSource.start();
+
+    sourceRef.current = noiseSource;
+    gainNodeRef.current = gainNode;
+  };
 
   const toggleAudio = () => {
-    if (!soundRef.current) return;
-
-    if (isPlaying) {
-      soundRef.current.fade(0.5, 0, 2000);
-      setTimeout(() => {
-        soundRef.current?.pause();
-      }, 2000);
-    } else {
-      soundRef.current.play();
-      soundRef.current.fade(0, 0.5, 3000);
+    if (!audioCtxRef.current) {
+      initAudio();
     }
+    
+    const ctx = audioCtxRef.current;
+    const gain = gainNodeRef.current;
+    
+    if (!ctx || !gain) return;
+
+    if (ctx.state === 'suspended') {
+      ctx.resume();
+    }
+
+    const now = ctx.currentTime;
+    
+    // Cancel any scheduled changes
+    gain.gain.cancelScheduledValues(now);
+    
+    if (isPlaying) {
+      // Fade out
+      gain.gain.setValueAtTime(gain.gain.value, now);
+      gain.gain.linearRampToValueAtTime(0, now + 2);
+    } else {
+      // Fade in
+      gain.gain.setValueAtTime(gain.gain.value, now);
+      gain.gain.linearRampToValueAtTime(0.8, now + 3);
+    }
+    
     setIsPlaying(!isPlaying);
   };
+
+  useEffect(() => {
+    return () => {
+      if (audioCtxRef.current) {
+        audioCtxRef.current.close();
+      }
+    };
+  }, []);
 
   return (
     <div className="fixed bottom-8 right-8 z-50">
