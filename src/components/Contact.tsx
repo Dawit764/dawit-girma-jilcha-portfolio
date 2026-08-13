@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Linkedin, Github, Phone, Send } from 'lucide-react';
+import { Mail, Linkedin, Github, Phone, Send, Calendar } from 'lucide-react';
+import { PopupModal } from 'react-calendly';
 import Magnetic from './ui/Magnetic';
 
 export default function Contact() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
+  const [isCalendlyOpen, setIsCalendlyOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -65,6 +67,12 @@ export default function Contact() {
       href: "https://github.com/Dawit764"
     },
     {
+      icon: <Send className="w-5 h-5" />,
+      label: "Telegram",
+      val: "Dave_girma",
+      href: "https://t.me/Dave_girma"
+    },
+    {
       icon: <Phone className="w-5 h-5" />,
       label: "Cellular",
       val: "+251936125929",
@@ -73,6 +81,7 @@ export default function Contact() {
   ];
 
   return (
+    <>
     <section id="contact" className="relative py-32 max-w-[1200px] mx-auto px-6 z-10">
       
       <motion.div
@@ -123,6 +132,18 @@ export default function Contact() {
                 </a>
               </Magnetic>
             ))}
+          </div>
+
+          <div className="mt-12 flex justify-center sm:justify-start">
+            <Magnetic>
+              <button 
+                onClick={() => setIsCalendlyOpen(true)}
+                className="w-full sm:w-auto px-8 rounded-full h-14 bg-primary text-primary-foreground font-medium text-sm transition-all hover:bg-primary/90 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 duration-500"
+              >
+                <Calendar className="w-5 h-5" />
+                Book a Meeting on Calendly
+              </button>
+            </Magnetic>
           </div>
         </motion.div>
         
@@ -210,5 +231,21 @@ export default function Contact() {
         </motion.div>
       </div>
     </section>
+
+      {/* Calendly Modal */}
+      <PopupModal
+        url="https://calendly.com/dave1212gir/30min"
+        onModalClose={() => setIsCalendlyOpen(false)}
+        open={isCalendlyOpen}
+        rootElement={document.getElementById("root")!}
+        pageSettings={{
+          backgroundColor: '0f1714',
+          hideEventTypeDetails: false,
+          hideLandingPageDetails: false,
+          primaryColor: 'ffffff',
+          textColor: 'ffffff'
+        }}
+      />
+    </>
   );
 }
