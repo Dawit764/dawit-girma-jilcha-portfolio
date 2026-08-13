@@ -4,7 +4,7 @@ import { Volume2, VolumeX } from 'lucide-react';
 import { motion } from 'motion/react';
 import Magnetic from './Magnetic';
 
-const AUDIO_URL = 'https://actions.google.com/sounds/v1/ambiences/forest_morning_with_birds.ogg';
+const AUDIO_URL = '/ambient.mp3';
 
 export default function AudioToggle() {
   const [isPlaying, setIsPlaying] = useState(false);
