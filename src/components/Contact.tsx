@@ -1,13 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
-import { Mail, Linkedin, Github, Phone, Send, Calendar } from 'lucide-react';
+import { Mail, Linkedin, Github, Phone, Send, Calendar, Download } from 'lucide-react';
 import { PopupModal } from 'react-calendly';
 import Magnetic from './ui/Magnetic';
+import { sanityClient } from '../sanity';
 
 export default function Contact() {
   const [formStatus, setFormStatus] = useState<'idle' | 'submitting' | 'success' | 'error'>('idle');
   const [errorMessage, setErrorMessage] = useState('');
   const [isCalendlyOpen, setIsCalendlyOpen] = useState(false);
+  const [cvUrl, setCvUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCv = async () => {
+      try {
+        const query = '*[_type == "cv"] | order(lastUpdated desc, _createdAt desc)[0]{ "cvUrl": cvFile.asset->url }';
+        const result = await sanityClient.fetch(query);
+        if (result?.cvUrl) {
+          setCvUrl(result.cvUrl);
+        }
+      } catch (error) {
+        console.error("Failed to fetch CV URL:", error);
+      }
+    };
+    fetchCv();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -134,7 +151,7 @@ export default function Contact() {
             ))}
           </div>
 
-          <div className="mt-12 flex justify-center sm:justify-start">
+          <div className="mt-12 flex flex-col sm:flex-row gap-4 justify-center sm:justify-start">
             <Magnetic>
               <button 
                 onClick={() => setIsCalendlyOpen(true)}
@@ -144,6 +161,20 @@ export default function Contact() {
                 Book a Meeting on Calendly
               </button>
             </Magnetic>
+            
+            {cvUrl && (
+              <Magnetic>
+                <a 
+                  href={cvUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full sm:w-auto px-8 rounded-full h-14 bg-white/5 border border-white/10 text-foreground font-medium text-sm transition-all hover:bg-white/10 flex items-center justify-center gap-3 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 duration-500 backdrop-blur-md"
+                >
+                  <Download className="w-5 h-5" />
+                  Download CV
+                </a>
+              </Magnetic>
+            )}
           </div>
         </motion.div>
         

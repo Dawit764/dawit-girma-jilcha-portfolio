@@ -15,12 +15,7 @@ export default function Hero() {
           transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="flex flex-col order-2 lg:order-1 items-center lg:items-start text-center lg:text-left z-10"
         >
-          <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 px-4 py-2 rounded-full text-xs text-primary/80 mb-6 backdrop-blur-md">
-            <span className="w-1.5 h-1.5 bg-primary/80 rounded-full animate-pulse shadow-[0_0_8px_var(--primary)]" />
-            <span className="tracking-wide uppercase">Available for Internships</span>
-          </div>
-          
-          <h1 className="text-[clamp(3rem,8vw,5.5rem)] font-normal leading-[1.1] tracking-tight mb-4 text-foreground font-display">
+          <h1 className="text-[clamp(3rem,8vw,5.5rem)] font-normal leading-[1.1] tracking-tight mb-4 text-foreground font-display mt-8">
             Dawit Girma
           </h1>
           
@@ -29,7 +24,7 @@ export default function Hero() {
           </div>
           
           <p className="text-[1.1rem] sm:text-[1.2rem] text-muted-foreground/80 mb-10 max-w-[540px] leading-relaxed font-light">
-            I craft immersive, organic digital experiences that blend aesthetic beauty with technical precision. Exploring the intersection of design, nature, and technology.
+            I craft immersive, organic digital experiences that blend aesthetic beauty with technical precision. Exploring the intersection of design, nature, and technology. Currently available for internships.
           </p>
           
           <div className="flex flex-wrap justify-center lg:justify-start gap-6">
