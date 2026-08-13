@@ -59,17 +59,19 @@ export default function GitHubActivity() {
           viewport={{ once: true, margin: "-100px" }}
           transition={{ duration: 1.5, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
         >
-          <div className="bg-white/5 border border-white/10 backdrop-blur-lg rounded-[3rem] p-10 md:p-16 flex flex-col items-center overflow-x-auto hide-scrollbar">
-            <div className="w-full min-w-[800px] flex justify-center relative z-10 github-calendar-wrapper opacity-90 mix-blend-screen">
-              <GitHubCalendar 
-                username="Dawit764" 
-                colorScheme="dark"
-                theme={customTheme}
-                fontSize={14}
-                blockSize={16}
-                blockMargin={8}
-                blockRadius={4}
-              />
+          <div className="bg-white/5 border border-white/10 backdrop-blur-lg rounded-[2rem] md:rounded-[3rem] p-6 md:p-16 flex flex-col items-center overflow-hidden">
+            <div className="w-full overflow-x-auto hide-scrollbar -mx-6 px-6 md:mx-0 md:px-0 pb-4">
+              <div className="min-w-[800px] flex justify-start md:justify-center relative z-10 github-calendar-wrapper opacity-90 mix-blend-screen">
+                <GitHubCalendar 
+                  username="Dawit764" 
+                  colorScheme="dark"
+                  theme={customTheme}
+                  fontSize={14}
+                  blockSize={16}
+                  blockMargin={8}
+                  blockRadius={4}
+                />
+              </div>
             </div>
           </div>
         </motion.div>

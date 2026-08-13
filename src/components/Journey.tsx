@@ -9,7 +9,7 @@ const JourneyCard = ({ item, isEven }: { item: any, isEven: boolean }) => {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-100px" }}
       transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
-      className={`w-full md:w-[45%] pl-12 md:pl-0 ${isEven ? 'md:pr-12 md:text-right' : 'md:pl-12'}`}
+      className={`w-full md:w-[45%] pl-16 md:pl-0 ${isEven ? 'md:pr-16 md:text-right' : 'md:pl-16'}`}
     >
       <div 
         className={`relative bg-white/5 backdrop-blur-md border border-white/10 p-8 md:p-10 transition-all duration-700 hover:bg-white/10 text-left w-full cursor-default ${isEven ? 'md:text-left' : 'md:text-left'} rounded-[3rem]`}

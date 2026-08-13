@@ -21,7 +21,6 @@ import Footer from './components/Footer';
 // New Immersive Components
 import SmoothScroll from './components/layout/SmoothScroll';
 import CustomCursor from './components/ui/CustomCursor';
-import AudioToggle from './components/ui/AudioToggle';
 import Scene from './components/canvas/Scene';
 
 function App() {
@@ -34,7 +33,6 @@ function App() {
         >
           <div className="noise-overlay" />
           <CustomCursor />
-          <AudioToggle />
           
           <Suspense fallback={<div className="fixed inset-0 z-0 bg-[#0f1714]" />}>
             <Scene />

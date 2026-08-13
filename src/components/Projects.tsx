@@ -116,38 +116,12 @@ export default function Projects() {
   }, []);
 
   useEffect(() => {
-    if (!loading && !selectedProject && scrollRef.current && containerRef.current) {
-      const container = containerRef.current;
-      const scrollElement = scrollRef.current;
-
-      const getScrollAmount = () => {
-        let scrollWidth = scrollElement.scrollWidth;
-        return -(scrollWidth - window.innerWidth);
-      };
-
-      const tween = gsap.to(scrollElement, {
-        x: getScrollAmount,
-        ease: "none",
-        scrollTrigger: {
-          trigger: container,
-          start: "top top",
-          end: () => `+=${getScrollAmount() * -1}`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true
-        }
-      });
-
-      return () => {
-        tween.kill();
-        ScrollTrigger.getAll().forEach(t => t.kill());
-      };
-    }
+    // GSAP removed to allow natural vertical scrolling
   }, [loading, selectedProject, projectsList.length]);
 
   if (loading) {
     return (
-      <section id="featured-projects" className="relative py-[100px] flex justify-center items-center h-screen z-10">
+      <section id="featured-projects" className="relative py-[100px] flex justify-center items-center min-h-[50vh] z-10">
         <Loader2 className="w-8 h-8 text-primary animate-spin" />
       </section>
     );
@@ -155,7 +129,7 @@ export default function Projects() {
 
   if (projectsList.length === 0) {
     return (
-      <section id="featured-projects" className="relative py-[100px] flex flex-col justify-center items-center h-[50vh] z-10">
+      <section id="featured-projects" className="relative py-[100px] flex flex-col justify-center items-center min-h-[50vh] z-10">
         <h2 className="text-3xl font-bold text-foreground mb-4">Featured Projects</h2>
         <p className="text-muted-foreground">Check back soon for updates!</p>
       </section>
@@ -164,18 +138,18 @@ export default function Projects() {
 
   return (
     <>
-      <section ref={containerRef} id="featured-projects" className="relative h-screen z-10 overflow-hidden flex items-center bg-transparent">
-        <div className="absolute top-1/4 left-[10vw] z-20 pointer-events-none">
-          <h2 className="text-[clamp(3rem,6vw,5rem)] font-display text-foreground drop-shadow-2xl opacity-80 mix-blend-overlay">
-            The Trail
+      <section id="featured-projects" className="relative py-32 z-10 overflow-hidden bg-transparent">
+        <div className="max-w-[1200px] mx-auto px-6 mb-20">
+          <h2 className="text-4xl md:text-[clamp(3rem,6vw,5rem)] font-display text-foreground opacity-90 drop-shadow-lg mix-blend-screen">
+            Featured Works
           </h2>
-          <p className="text-muted-foreground text-lg max-w-sm italic">
-            Scroll to walk through recent works
+          <p className="text-muted-foreground text-lg max-w-sm italic mt-4">
+            A selection of recent projects
           </p>
         </div>
         
-        <div ref={scrollRef} className="flex gap-[15vw] pl-[40vw] pr-[20vw] items-center h-full w-max">
-          {projectsList.map((project) => {
+        <div className="max-w-[1200px] mx-auto px-6 flex flex-col gap-16 md:gap-32">
+          {projectsList.map((project, index) => {
             const coverImage = project.gallery && project.gallery.length > 0 
               ? (typeof project.gallery[0] === 'string' ? project.gallery[0] : urlFor(project.gallery[0]).width(1200).url()) 
               : '';
@@ -183,33 +157,50 @@ export default function Projects() {
             return (
               <div 
                 key={project._id}
-                className="relative group w-[70vw] max-w-[800px] aspect-[4/3] rounded-[3rem] overflow-hidden cursor-pointer bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl transition-transform duration-700 hover:scale-[1.02]"
-                onClick={() => setSelectedProject(project)}
+                className={`relative group w-full flex flex-col md:flex-row gap-8 md:gap-12 items-center ${index % 2 !== 0 ? 'md:flex-row-reverse' : ''}`}
               >
-                {coverImage && (
-                  <img 
-                    src={coverImage} 
-                    alt={project.title} 
-                    className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-60 transition-all duration-1000 group-hover:mix-blend-normal group-hover:opacity-90 group-hover:scale-105"
-                    loading="lazy" 
-                    referrerPolicy="no-referrer" 
-                  />
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent pointer-events-none" />
+                <div 
+                  className="relative w-full md:w-3/5 aspect-[4/3] rounded-[2rem] md:rounded-[3rem] overflow-hidden cursor-pointer bg-white/5 border border-white/10 backdrop-blur-md shadow-2xl transition-transform duration-700 hover:scale-[1.02]"
+                  onClick={() => setSelectedProject(project)}
+                >
+                  {coverImage && (
+                    <img 
+                      src={coverImage} 
+                      alt={project.title} 
+                      className="absolute inset-0 w-full h-full object-cover mix-blend-luminosity opacity-60 transition-all duration-1000 group-hover:mix-blend-normal group-hover:opacity-90 group-hover:scale-105"
+                      loading="lazy" 
+                      referrerPolicy="no-referrer" 
+                    />
+                  )}
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-colors duration-500 pointer-events-none" />
+                </div>
                 
-                <div className="absolute inset-x-0 bottom-0 p-10 flex flex-col items-start transform transition-transform duration-500 pointer-events-none">
-                  <div className="flex flex-wrap gap-2 mb-4">
+                <div className="w-full md:w-2/5 flex flex-col items-start justify-center">
+                  <div className="flex flex-wrap gap-2 mb-6">
                     {(project.badges || []).slice(0, 3).map(badge => (
-                      <Badge key={badge} variant="secondary" className="px-4 py-1.5 bg-white/10 text-white font-sans rounded-full border border-white/20 backdrop-blur-md font-light text-xs tracking-wider">
+                      <Badge key={badge} variant="secondary" className="px-4 py-1.5 bg-white/5 text-foreground/80 font-sans rounded-full border border-white/10 backdrop-blur-md font-light text-xs tracking-wider">
                         {badge}
                       </Badge>
                     ))}
                   </div>
                   
-                  <h3 className="text-4xl md:text-5xl font-display text-white mb-3">{project.title}</h3>
-                  <p className="text-white/70 leading-relaxed max-w-lg font-light text-lg">
+                  <h3 
+                    className="text-3xl md:text-5xl font-display text-foreground mb-4 cursor-pointer hover:text-primary transition-colors"
+                    onClick={() => setSelectedProject(project)}
+                  >
+                    {project.title}
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed font-light text-lg mb-8">
                     {project.tagline}
                   </p>
+
+                  <Button 
+                    variant="outline"
+                    className="rounded-full bg-white/5 border-white/10 hover:bg-white/10 hover:border-white/20"
+                    onClick={() => setSelectedProject(project)}
+                  >
+                    View Case Study
+                  </Button>
                 </div>
               </div>
             );
